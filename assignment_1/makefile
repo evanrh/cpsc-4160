@@ -1,10 +1,33 @@
 CC = g++
+CFLAGS = `sdl2-config --cflags` -g
+LDFLAGS = `sdl2-config --libs` -lSDL2_image -lm
 
-SRCS = main.cpp
-BIN = project1
-CFLAGS = `sdl2-config --cflags --libs` -lSDL2_image -g
+SRCDIR = src
+ODIR = obj
+BIN = assignment1 
+BINDIR = bin
 
-all: $(BIN)
+_OBJ = main.o
+OBJ = $(patsubst %, $(ODIR)/%, $(_OBJ))
 
-$(BIN): $(SRCS)
-	 $(CC) $^ $(CFLAGS)
+.PHONY: all
+all: $(BINDIR) $(ODIR) $(BINDIR)/$(BIN)
+
+$(ODIR)/%.o: $(SRCDIR)/%.cpp $(ODIR)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(BINDIR)/$(BIN): $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+
+run: all
+	./$(BINDIR)/$(BIN)
+
+$(ODIR):
+	mkdir -p $@
+
+$(BINDIR):
+	mkdir -p $@
+
+.PHONY: clean
+clean:
+	rm -rf $(ODIR) $(BINDIR)
