@@ -1,3 +1,10 @@
+/*
+    Evan Hastings
+    CPSC 6160-001
+    Spring 2021
+    Assignment 1
+
+*/
 #include <iostream>
 #include <string>
 #include <random>
