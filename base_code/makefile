@@ -1,24 +1,24 @@
 CC = g++
 
-SRCDIR = src
-ODIR = obj
-BIN = base
-BINDIR = bin
-IDIR = include
+SRCDIR := src
+ODIR := obj
+BIN := base
+BINDIR := bin
+IDIR := include
 
 CFLAGS = `sdl2-config --cflags` -g -I$(IDIR)
 LDFLAGS = `sdl2-config --libs` -lSDL2_image -lm
 
 _DEPS = GameObject.h GameEngine.h
-DEPS = $(patsubst %, $(IDIR)/%, $(_DEPS))
+DEPS := $(patsubst %, $(IDIR)/%, $(_DEPS))
 
-_OBJ = GameEngine.o GameObject.o main.o
-OBJ = $(patsubst %, $(ODIR)/%, $(_OBJ))
+_OBJ = main.o GameEngine.o GameObject.o
+OBJ := $(patsubst %, $(ODIR)/%, $(_OBJ))
 
 .PHONY: all
 all: $(BINDIR) $(ODIR) $(BINDIR)/$(BIN)
 
-$(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPS) $(ODIR)
+$(ODIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(BINDIR)/$(BIN): $(OBJ)
