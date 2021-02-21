@@ -41,23 +41,14 @@ void GameEngine::render() {
    SDL_RenderClear(renderer);
    player->render();
    SDL_RenderPresent(renderer);
-   //SDL_SetRenderDrawColor(renderer, 0,0,0,255);
 }
 
 void GameEngine::update() {
-   unsigned y_vel = player->get_y_vel();
-   unsigned update_start_time = SDL_GetTicks();
-   if(y_vel != 0) {
-      player->set_y_vel(GRAVITY * ((update_start_time - y_start_time) / 1000) + y_vel);
-      std::cout << player->get_y_vel() << std::endl;
-   }
-   else if(y_vel >= MAX_Y_VEL) {
-      y_vel = MAX_Y_VEL;
-   }
    player->update();
 }
 
 void GameEngine::framerate() {
+   // Calculate the current framerate, and delay accordingly
    static unsigned fps, fpsCounter, duration;
 
    current_time = SDL_GetTicks();
@@ -75,8 +66,19 @@ void GameEngine::framerate() {
 }
 
 void GameEngine::handle_input() {
+   // This will take up to 7 inputs at a time. It seemed like a reasonable number
    unsigned num_inputs = 0;
    unsigned max_inputs = 7;
+
+   // Below in the while loop is the player's state machine
+   // Ideally, this will eventually be in the player class, as the engine does not need to know about the various states the player can be in
+   // As for now, there are four possible states:
+   //    idle
+   //    moving left
+   //    moving right
+   //    jumping
+   // Each of these states has a separate sprite animation, except for jumping currently.
+
    while(SDL_PollEvent(&this->input) and num_inputs < max_inputs) {
       switch(input.type) {
          case SDL_QUIT:
@@ -85,18 +87,18 @@ void GameEngine::handle_input() {
          case SDL_KEYDOWN:
             switch(input.key.keysym.sym) {
                case SDLK_RIGHT:
-                  player->set_x_vel(START_X_VEL);
+                  player->set_x_pos(player->get_x_pos() + START_X_VEL);
                   player->set_motion_state(OBJ_MOVE_RIGHT);
                   break;
                case SDLK_LEFT:
-                  player->set_x_vel(-1 * START_X_VEL);
+                  player->set_x_pos(player->get_x_pos() - START_X_VEL);
                   player->set_motion_state(OBJ_MOVE_LEFT);
                   break;
                case SDLK_UP:
-                  if(player->get_y_vel() == 0) {
-                     y_start_time = SDL_GetTicks();
-                     player->set_y_vel(-1 * START_Y_VEL);
-                  }
+                  player->set_y_vel(player->get_y_vel() - START_Y_VEL);
+                  player->set_motion_state(OBJ_JUMPING);
+                  break;
+               default:
                   break;
             }
             break;
@@ -108,9 +110,18 @@ void GameEngine::handle_input() {
                   break;
             }
             break;
-            
       }
+      
       num_inputs++;
+   }
+
+   double y_vel = player->get_y_vel();
+   double y_pos = player->get_y_pos();
+   if(num_inputs == 0) {
+      // This conditional is the gravity acting upon the player.
+      if(y_pos < (SCREEN_HEIGHT - 64) or y_vel != 0) {
+         player->set_y_vel(y_vel + .5);
+      }
    }
 }
 

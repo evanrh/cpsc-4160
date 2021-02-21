@@ -9,7 +9,6 @@ GameObject::GameObject(unsigned start_x, unsigned start_y, SDL_Renderer* ren, co
    obj_rect.h = 64;
 
    SDL_Surface* surf = IMG_Load(img_file);
-   std::cout << img_file << std::endl;
    obj_graphic = SDL_CreateTextureFromSurface(ren, surf);
 
    if(!obj_graphic) {
@@ -24,6 +23,22 @@ GameObject::GameObject(unsigned start_x, unsigned start_y, SDL_Renderer* ren, co
 
 GameObject::~GameObject() {
    delete obj_sprite;
+}
+
+void GameObject::set_x_vel(double vel) {
+   x_vel = vel;
+}
+
+void GameObject::set_y_vel(double vel) {
+   y_vel = vel;
+}
+
+void GameObject::set_x_pos(unsigned pos) {
+   obj_rect.x = pos;
+}
+
+void GameObject::set_y_pos(unsigned pos) {
+   obj_rect.y = pos;
 }
 
 void GameObject::update() {
@@ -44,16 +59,22 @@ void GameObject::update() {
    }
 
    obj_rect.x += x_vel * ((current_frame_time - last_frame_time) / 1000);
-   obj_rect.y += y_vel * ((current_frame_time - last_frame_time) / 1000);
+   obj_rect.y += y_vel * (double)(current_frame_time - last_frame_time) / 10;
 
+   // Checks to keep the object in the bounds of the screen
    if(obj_rect.x > SCREEN_WIDTH) { obj_rect.x = 0; }
    else if( obj_rect.x < 0) { obj_rect.x = SCREEN_WIDTH; }
 
-   if(obj_rect.y > SCREEN_HEIGHT) { 
-      obj_rect.y = SCREEN_HEIGHT;
+   if(obj_rect.y > (SCREEN_HEIGHT - obj_rect.h)) { 
+      obj_rect.y = SCREEN_HEIGHT - obj_rect.h;
+      y_vel = 0;
+   }
+   if(obj_rect.y < 0) {
+      obj_rect.y = 0;
       y_vel = 0;
    }
 
+   last_frame_time = current_frame_time;
 }
 
 void GameObject::render() {

@@ -17,11 +17,15 @@ class GameObject {
       void cleanup();
       void update();
       void render();
-      void set_x_vel(double vel) {x_vel = vel;}
-      void set_y_vel(double vel) {y_vel = vel;}
+      void set_x_vel(double vel);
+      void set_y_vel(double vel);
+      void set_x_pos(unsigned pos);
+      void set_y_pos(unsigned pos);
       void set_motion_state(unsigned state) {motion_state = state;}
       double get_x_vel() {return x_vel;}
       double get_y_vel() {return y_vel;}
+      unsigned get_x_pos() {return obj_rect.x;};
+      unsigned get_y_pos() {return obj_rect.y;};
 
    private:
       SDL_Renderer* obj_renderer;
