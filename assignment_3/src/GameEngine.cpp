@@ -1,3 +1,5 @@
+#include <tinyxml2/tinyxml2.h>
+#include "parsing.h"
 #include "GameEngine.h"
 
 GameEngine::GameEngine() {
@@ -8,6 +10,10 @@ GameEngine::~GameEngine() {
 }
 
 void GameEngine::init() {
+   if(this->inited) {
+      return;
+   }
+
    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
       std::cout << "Error Initializing SDL: " << SDL_GetError() << std::endl;
    }
@@ -23,10 +29,10 @@ void GameEngine::init() {
    IMG_Init(IMG_INIT_PNG);
    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
    if(!renderer) {
-      std::cerr << "Could not create renderer." << std::endl;
+      std::cerr << "Could not create renderer." << SDL_GetError() << std::endl;
    }
-   player = new Player(renderer);
 
+   inited = true;
 }
 
 void GameEngine::loop() {
@@ -37,6 +43,21 @@ void GameEngine::loop() {
       this->render();
       this->framerate();
    }
+}
+
+void GameEngine::load_game(std::string game_filename) {
+   if(!this->inited) {
+      this->init();
+   }
+
+   GameParser* gp = gp->get_instance();
+
+   gp->load_game(game_filename);
+   player = gp->get_player(renderer);
+
+   levels = gp->get_levels(renderer);
+
+   gp->cleanup();
 }
 
 void GameEngine::render() {

@@ -17,11 +17,16 @@
 
 using namespace std;
 
-int main(void) {
+int main(int argc, char** argv) {
 
+   if(argc < 2) {
+      cerr << "Please specify a game setup file! (e.g. ./res/game.xml)" << endl;
+      return EXIT_FAILURE;
+   }
    GameEngine* engine = new GameEngine();
 
-   engine->init();
+   engine->load_game(argv[1]);
+   
    engine->loop();
    engine->cleanup();
 

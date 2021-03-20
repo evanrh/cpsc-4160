@@ -12,7 +12,7 @@ GameObject::GameObject(unsigned start_x, unsigned start_y, SDL_Renderer* ren, co
    obj_graphic = SDL_CreateTextureFromSurface(ren, surf);
 
    if(!obj_graphic) {
-      std::cerr << "Could not load image" << std::endl;
+      std::cerr << "Could not load image: " << SDL_GetError() << std::endl;
    }
 
    SDL_FreeSurface(surf);

@@ -9,7 +9,7 @@
 
 class Player: public GameObject {
    public:
-      Player(SDL_Renderer* ren);
+      Player(SDL_Renderer* ren, const char *sprite_filename);
       ~Player();
 };
 #endif

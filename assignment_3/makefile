@@ -6,16 +6,16 @@ BIN := assn3
 IDIR := include
 LIBDIR := lib
 
-CFLAGS = `sdl2-config --cflags` -g -I$(IDIR)
+CFLAGS = `sdl2-config --cflags` -g -I$(IDIR) --std=c++17
 LDFLAGS = `sdl2-config --libs` -lSDL2_image -lm -L$(LIBDIR)
 
 _LIBS := tinyxml2.a
 LIBS := $(patsubst %, $(LIBDIR)/%, $(_LIBS))
 
-_DEPS = GameObject.h GameEngine.h Player.h Sprite.h globals.h
+_DEPS = GameObject.h GameEngine.h Player.h Sprite.h globals.h parsing.h tileset.h TextureController.h
 DEPS := $(patsubst %, $(IDIR)/%, $(_DEPS))
 
-_OBJ = main.o GameEngine.o GameObject.o Player.o Sprite.o
+_OBJ = main.o GameEngine.o GameObject.o Player.o Sprite.o parsing.o TextureController.o
 OBJ := $(patsubst %, $(ODIR)/%, $(_OBJ))
 
 .PHONY: all
@@ -31,7 +31,7 @@ $(BIN): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
 
 run: all
-	./$(BIN)
+	./$(BIN) ./res/game.xml
 
 $(ODIR):
 	mkdir -p $@
