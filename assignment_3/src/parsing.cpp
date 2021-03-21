@@ -56,13 +56,19 @@ std::vector<Level*> GameParser::get_levels(SDL_Renderer* ren) {
    tinyxml2::XMLElement *level_data, *root;
    std::vector<Level*> levels;
 
+   fs::path level_path = root_filepath;
+   fs::path lp_holder = level_path;
+
    root = this->game_file->FirstChildElement("game");
 
    MapParser* mp = mp->get_instance();
    for(level_data = root->FirstChildElement("level"); level_data = level_data->NextSiblingElement(); level_data != nullptr) {
       std::string level_file = level_data->Attribute("file");
-      Level* current_level = mp->load(level_file);
+      level_path /= level_file;
+      Level* current_level = mp->load(level_path.c_str());
       levels.push_back(current_level);
+
+      level_path = lp_holder;
    }
 
    return levels;
