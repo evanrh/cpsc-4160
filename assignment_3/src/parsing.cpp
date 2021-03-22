@@ -1,23 +1,41 @@
-#include "parsing.h"
-#include "tileset.h"
 #include <tinyxml2/tinyxml2.h>
 #include <filesystem>
 #include <fstream>
+
+#include "parsing.h"
+#include "tileset.h"
+#include "layers.h"
+#include "camera.h"
+#include "GameEngine.h"
 
 namespace fs = std::filesystem;
 
 MapParser *MapParser::map_instance = nullptr;
 GameParser *GameParser::game_instance = nullptr;
 
+void Level::render() {
+   for(auto bg : bg_layers) {
+      bg.render();
+   }
+}
+
 Level* MapParser::load(std::string filename) {
+   int width, height;
+   int tile_h, tile_w;
    Level* loaded_level = new Level();
    tinyxml2::XMLElement *header, *tiles, *tileset;
    tinyxml2::XMLDocument map_file;
    map_file.LoadFile(filename.c_str());
 
    header = map_file.FirstChildElement("map");
+   width = std::stoi(header->Attribute("width"));
+   height = std::stoi(header->Attribute("height"));
+   tile_w = std::stoi(header->Attribute("tilewidth"));
+   tile_h = std::stoi(header->Attribute("tileheight"));
    tileset = header->FirstChildElement("tileset");
    tiles = header->FirstChildElement("data");
+
+   Camera::get_instance()->set_limits(width * tile_w, height * tile_h);
    return loaded_level;
 }
 
@@ -39,7 +57,7 @@ void GameParser::cleanup() {
 }
 
 // Return a new player object created from the imbued game file
-Player* GameParser::get_player(SDL_Renderer* ren) {
+Player* GameParser::get_player() {
    tinyxml2::XMLElement *player_data, *root;
 
    root = this->game_file->FirstChildElement("game");
@@ -48,7 +66,10 @@ Player* GameParser::get_player(SDL_Renderer* ren) {
    fs::path full_path = root_filepath;
    full_path /= player_data->Attribute("file");
 
-   return new Player(ren, full_path.c_str());
+   int w = std::stoi(player_data->Attribute("width"));
+   int h = std::stoi(player_data->Attribute("height"));
+
+   return new Player(GameEngine::get_instance()->get_renderer(), w, h, full_path.c_str());
 }
 
 // Return a vector of levels specified by level files in the game file
@@ -62,12 +83,27 @@ std::vector<Level*> GameParser::get_levels(SDL_Renderer* ren) {
    root = this->game_file->FirstChildElement("game");
 
    MapParser* mp = mp->get_instance();
-   for(level_data = root->FirstChildElement("level"); level_data = level_data->NextSiblingElement(); level_data != nullptr) {
+   for(level_data = root->FirstChildElement("level"); level_data != nullptr; level_data = level_data->NextSiblingElement()) {
+
+      // Get relative of path of each level file
       std::string level_file = level_data->Attribute("file");
       level_path /= level_file;
       Level* current_level = mp->load(level_path.c_str());
-      levels.push_back(current_level);
 
+      // Parse background layers from level
+      float scroll_speed = 1.0f;
+      for(auto layer = level_data->FirstChildElement("layer"); layer != nullptr; layer = layer->NextSiblingElement()) {
+         std::string tex_id = layer->Attribute("id");
+         fs::path layer_path = root_filepath;
+         layer_path /= layer->Attribute("file");
+
+         BackgroundLayer bg(tex_id, layer_path.c_str(), 0, 0, scroll_speed);
+         scroll_speed /= 2;
+         current_level->add_background_layer(bg);
+
+      }
+
+      levels.push_back(current_level);
       level_path = lp_holder;
    }
 

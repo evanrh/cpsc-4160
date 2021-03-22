@@ -7,13 +7,18 @@
 #include <vector>
 #include "tileset.h"
 #include "Player.h"
+#include "layers.h"
 
 class Level {
    public:
       void add_tile(Tile);
+      void add_background_layer(BackgroundLayer& bg) { bg_layers.push_back(bg); }
+      void update() {}
+      void render();
 
    private:
       TileSet level_map;
+      std::vector<BackgroundLayer> bg_layers; // Background layers. Rendered in back-to-front order
 };
 
 class MapParser {
@@ -34,7 +39,7 @@ class GameParser {
       // This must be imbued before the other methods can be run
       void load_game(std::string filename);
       void cleanup();
-      Player* get_player(SDL_Renderer* ren);
+      Player* get_player(void);
       std::vector<Level*> get_levels(SDL_Renderer* ren);
    private:
       GameParser() {}

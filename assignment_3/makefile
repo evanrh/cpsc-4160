@@ -12,10 +12,10 @@ LDFLAGS = `sdl2-config --libs` -lSDL2_image -lm -L$(LIBDIR)
 _LIBS := tinyxml2.a
 LIBS := $(patsubst %, $(LIBDIR)/%, $(_LIBS))
 
-_DEPS = GameObject.h GameEngine.h Player.h Sprite.h globals.h parsing.h tileset.h TextureController.h
+_DEPS = GameObject.h GameEngine.h Player.h Sprite.h globals.h parsing.h tileset.h TextureController.h layers.h camera.h
 DEPS := $(patsubst %, $(IDIR)/%, $(_DEPS))
 
-_OBJ = main.o GameEngine.o GameObject.o Player.o Sprite.o parsing.o TextureController.o
+_OBJ = main.o GameEngine.o GameObject.o Player.o Sprite.o parsing.o TextureController.o layers.o camera.o
 OBJ := $(patsubst %, $(ODIR)/%, $(_OBJ))
 
 .PHONY: all

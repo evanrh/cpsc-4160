@@ -23,14 +23,12 @@ int main(int argc, char** argv) {
       cerr << "Please specify a game setup file! (e.g. ./res/game.xml)" << endl;
       return EXIT_FAILURE;
    }
-   GameEngine* engine = new GameEngine();
+   GameEngine* engine = GameEngine::get_instance();
 
    engine->load_game(argv[1]);
    
    engine->loop();
    engine->cleanup();
-
-   delete engine;
 
    return 0;
 }

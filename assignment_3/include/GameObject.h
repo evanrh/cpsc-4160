@@ -10,7 +10,7 @@
 
 class GameObject {
    public:
-      GameObject(unsigned start_x, unsigned start_y, SDL_Renderer* ren, const char* img_file);
+      GameObject(unsigned start_x, unsigned start_y, int w, int h, SDL_Renderer* ren, const char* img_file);
       ~GameObject();
 
       void init();

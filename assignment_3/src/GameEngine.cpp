@@ -1,6 +1,9 @@
 #include <tinyxml2/tinyxml2.h>
 #include "parsing.h"
 #include "GameEngine.h"
+#include "camera.h"
+
+GameEngine* GameEngine::s_instance = nullptr;
 
 GameEngine::GameEngine() {
 }
@@ -18,7 +21,7 @@ void GameEngine::init() {
       std::cout << "Error Initializing SDL: " << SDL_GetError() << std::endl;
    }
 
-   SDL_WindowFlags w_flags = (SDL_WindowFlags) (SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+   SDL_WindowFlags w_flags = (SDL_WindowFlags) (SDL_WINDOW_ALLOW_HIGHDPI);
    window = SDL_CreateWindow("Base Game Window",
                SDL_WINDOWPOS_CENTERED,
                SDL_WINDOWPOS_CENTERED,
@@ -53,21 +56,34 @@ void GameEngine::load_game(std::string game_filename) {
    GameParser* gp = gp->get_instance();
 
    gp->load_game(game_filename);
-   player = gp->get_player(renderer);
+   player = gp->get_player();
 
+   Camera::get_instance()->set_target(player);
    levels = gp->get_levels(renderer);
 
+   if(levels.size() < 1) {
+      std::cerr << "Please specify a level in the game setup!" << std::endl;
+      this->running = false;
+      return;
+   }
+   current_level = levels[0];
    gp->cleanup();
 }
 
 void GameEngine::render() {
    SDL_RenderClear(renderer);
+   current_level->render();
    player->render();
+
+   //SDL_Rect cam = Camera::get_instance()->get_view();
+   //SDL_RenderCopy(renderer, NULL, &cam, NULL);
    SDL_RenderPresent(renderer);
 }
 
 void GameEngine::update() {
    player->update();
+   current_level->update();
+   Camera::get_instance()->update();
 }
 
 void GameEngine::framerate() {

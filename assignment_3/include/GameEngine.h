@@ -16,8 +16,7 @@
 
 class GameEngine {
    public:
-      GameEngine();
-      ~GameEngine();
+      static GameEngine* get_instance() { return s_instance = (s_instance != nullptr) ? s_instance : new GameEngine() ;}
 
       void load_game(std::string game_filename);
       void handle_input();
@@ -26,7 +25,9 @@ class GameEngine {
       void loop();
       void update();
       void framerate();
+      SDL_Renderer* get_renderer() { return renderer; }
    private:
+      static GameEngine *s_instance;
       Player* player;
       SDL_Renderer* renderer;
       SDL_Window* window;
@@ -37,7 +38,10 @@ class GameEngine {
       unsigned start_time;
       unsigned y_start_time;
       std::vector<Level*> levels;
+      Level* current_level;
 
+      GameEngine();
+      ~GameEngine();
       void init();
 };
 

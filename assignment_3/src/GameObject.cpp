@@ -1,12 +1,12 @@
 #include "GameObject.h"
 
-GameObject::GameObject(unsigned start_x, unsigned start_y, SDL_Renderer* ren, const char* img_file) {
+GameObject::GameObject(unsigned start_x, unsigned start_y, int w, int h, SDL_Renderer* ren, const char* img_file) {
    obj_renderer = ren;
 
    obj_rect.x = start_x;
    obj_rect.y = start_y;
-   obj_rect.w = 64;
-   obj_rect.h = 64;
+   obj_rect.w = w;
+   obj_rect.h = h;
 
    SDL_Surface* surf = IMG_Load(img_file);
    obj_graphic = SDL_CreateTextureFromSurface(ren, surf);
@@ -62,8 +62,10 @@ void GameObject::update() {
    obj_rect.y += y_vel * (double)(current_frame_time - last_frame_time) / 10;
 
    // Checks to keep the object in the bounds of the screen
+   /*
    if(obj_rect.x > SCREEN_WIDTH) { obj_rect.x = 0; }
    else if( obj_rect.x < 0) { obj_rect.x = SCREEN_WIDTH; }
+   */
 
    if(obj_rect.y > (SCREEN_HEIGHT - obj_rect.h)) { 
       obj_rect.y = SCREEN_HEIGHT - obj_rect.h;

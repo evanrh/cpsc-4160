@@ -1,7 +1,6 @@
 #ifndef TEXTURECONTROLLER_H
 #define TEXTURECONTROLLER_H
 
-#include <cstdint>
 #include <map>
 #include <string>
 #include <iostream>
@@ -10,16 +9,16 @@
 
 class TextureController {
    public:
-       static TextureController* GetInstance() { return s_instance = (s_instance != nullptr) ? s_instance : new TextureController();}
+       static TextureController* get_instance() { return s_instance = (s_instance != nullptr) ? s_instance : new TextureController();}
 
-       bool load(std::string id, std::string filename, SDL_Renderer* ren);
+       bool load(std::string id, std::string filename);
        void drop(std::string id);
        void cleanup();
-       void render(std::string id, SDL_Renderer* ren, int x, int y, uint32_t width, uint32_t height);
+       void render(std::string id, int x, int y, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio);
 
    private:
       std::map<std::string, SDL_Texture*> textures;
-      TextureController();
+      TextureController(){}
       static TextureController *s_instance;
 };
 
