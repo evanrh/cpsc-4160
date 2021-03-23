@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <game>
-   <player width="32" height="32" file="./sprites/player.png">
+   <player width="64" height="64" file="./sprites/player.png">
    </player>
    <level file="./maps/level.tmx">
       <layer id="sky" file="./bg/10_Sky.png"></layer>

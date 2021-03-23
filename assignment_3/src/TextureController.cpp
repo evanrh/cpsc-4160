@@ -34,8 +34,7 @@ void TextureController::render(std::string id, int x, int y, SDL_RendererFlip fl
    SDL_Rect src = {0, 0, 0, 0};
    SDL_Rect cam_rect = Camera::get_instance()->get_view();
    cam_rect.x *= speed_ratio;
-   cam_rect.y *= speed_ratio;
-   SDL_Rect dest = {x - cam_rect.x, y - cam_rect.y, 0, 0};
+   SDL_Rect dest = {x - cam_rect.x, cam_rect.y, 0, 0};
 
    SDL_QueryTexture(tex, nullptr, nullptr, &src.w, &src.h);
 
@@ -45,3 +44,18 @@ void TextureController::render(std::string id, int x, int y, SDL_RendererFlip fl
    SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), tex, &src, &dest, rotation, nullptr, flip);
 }
 
+void TextureController::render_frame(std::string id, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio) {
+   SDL_Texture *tex = textures[id];
+
+   SDL_Rect cam_rect = Camera::get_instance()->get_view();
+   cam_rect.x *= speed_ratio;
+   cam_rect.y *= speed_ratio;
+
+   dest.x -= cam_rect.x;
+   dest.y += cam_rect.y;
+
+   dest.w *= x_scale;
+   dest.h *= y_scale;
+
+   SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), tex, &src, &dest, rotation, nullptr, flip);
+}

@@ -10,7 +10,7 @@
 
 class GameObject {
    public:
-      GameObject(unsigned start_x, unsigned start_y, int w, int h, SDL_Renderer* ren, const char* img_file);
+      GameObject(unsigned start_x, unsigned start_y, int w, int h, std::string img_id, std::string img_file);
       ~GameObject();
 
       void init();
@@ -28,10 +28,9 @@ class GameObject {
       unsigned get_y_pos() {return obj_rect.y;};
 
    private:
-      SDL_Renderer* obj_renderer;
-      SDL_Texture* obj_graphic;
       SDL_Rect obj_rect;
       SDL_Rect current_frame;
+      std::string img_id;
       Sprite* obj_sprite;
       double x_vel;
       double y_vel;

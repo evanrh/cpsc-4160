@@ -69,7 +69,7 @@ Player* GameParser::get_player() {
    int w = std::stoi(player_data->Attribute("width"));
    int h = std::stoi(player_data->Attribute("height"));
 
-   return new Player(GameEngine::get_instance()->get_renderer(), w, h, full_path.c_str());
+   return new Player(w, h, full_path.c_str());
 }
 
 // Return a vector of levels specified by level files in the game file
@@ -91,14 +91,14 @@ std::vector<Level*> GameParser::get_levels(SDL_Renderer* ren) {
       Level* current_level = mp->load(level_path.c_str());
 
       // Parse background layers from level
-      float scroll_speed = 1.0f;
+      float scroll_speed = 1.0f / (64);
       for(auto layer = level_data->FirstChildElement("layer"); layer != nullptr; layer = layer->NextSiblingElement()) {
          std::string tex_id = layer->Attribute("id");
          fs::path layer_path = root_filepath;
          layer_path /= layer->Attribute("file");
 
-         BackgroundLayer bg(tex_id, layer_path.c_str(), 0, 0, scroll_speed);
-         scroll_speed /= 2;
+         BackgroundLayer bg(tex_id, layer_path.c_str(), 0, 0, scroll_speed, 0.5f, 0.7f);
+         scroll_speed *= 2;
          current_level->add_background_layer(bg);
 
       }

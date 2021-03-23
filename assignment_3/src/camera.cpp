@@ -28,6 +28,6 @@ void Camera::update() {
       else if(view_box.y > (scene_height - view_box.h)) {
          view_box.y = scene_height - view_box.h;
       }
-      std::cout << "Camera pos: (" << view_box.x << " " << view_box.y << ")" << std::endl;
+
    }
 }

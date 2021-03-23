@@ -1,21 +1,18 @@
 #include "GameObject.h"
+#include "GameEngine.h"
+#include "TextureController.h"
+#include "camera.h"
 
-GameObject::GameObject(unsigned start_x, unsigned start_y, int w, int h, SDL_Renderer* ren, const char* img_file) {
-   obj_renderer = ren;
+GameObject::GameObject(unsigned start_x, unsigned start_y, int w, int h, std::string img_id, std::string img_file) {
 
+   this->img_id = img_id;
    obj_rect.x = start_x;
    obj_rect.y = start_y;
    obj_rect.w = w;
    obj_rect.h = h;
 
-   SDL_Surface* surf = IMG_Load(img_file);
-   obj_graphic = SDL_CreateTextureFromSurface(ren, surf);
+   TextureController::get_instance()->load(img_id, img_file);
 
-   if(!obj_graphic) {
-      std::cerr << "Could not load image: " << SDL_GetError() << std::endl;
-   }
-
-   SDL_FreeSurface(surf);
    obj_sprite = new Sprite(32, 32, 4, 1000 / 10);
    x_vel = 0;
    y_vel = 0;
@@ -62,13 +59,14 @@ void GameObject::update() {
    obj_rect.y += y_vel * (double)(current_frame_time - last_frame_time) / 10;
 
    // Checks to keep the object in the bounds of the screen
-   /*
-   if(obj_rect.x > SCREEN_WIDTH) { obj_rect.x = 0; }
-   else if( obj_rect.x < 0) { obj_rect.x = SCREEN_WIDTH; }
-   */
 
-   if(obj_rect.y > (SCREEN_HEIGHT - obj_rect.h)) { 
-      obj_rect.y = SCREEN_HEIGHT - obj_rect.h;
+   SDL_Rect max = Camera::get_instance()->get_view();
+
+   if(obj_rect.x > (max.w - obj_rect.w + (SCREEN_WIDTH / 2))) { obj_rect.x = max.w - obj_rect.w + (SCREEN_WIDTH / 2); }
+   else if( obj_rect.x < 0) { obj_rect.x = 0; }
+
+   if(obj_rect.y > (max.h - obj_rect.h)) { 
+      obj_rect.y = max.h - obj_rect.h;
       y_vel = 0;
    }
    if(obj_rect.y < 0) {
@@ -80,8 +78,11 @@ void GameObject::update() {
 }
 
 void GameObject::render() {
-   SDL_RenderCopyEx(obj_renderer, obj_graphic, &current_frame, &obj_rect, 0.0, NULL, flip);
+   //std::cout << current_frame % 4 << std::endl;
+   TextureController::get_instance()->render_frame(img_id, current_frame, obj_rect, flip, 1, 1, 0, 1);
+   //SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), obj_graphic, &current_frame, &obj_rect, 0.0, NULL, flip);
 }
+
 void GameObject::init() {
 
 }

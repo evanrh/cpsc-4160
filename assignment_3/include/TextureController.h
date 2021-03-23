@@ -15,6 +15,7 @@ class TextureController {
        void drop(std::string id);
        void cleanup();
        void render(std::string id, int x, int y, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio);
+       void render_frame(std::string id, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio);
 
    private:
       std::map<std::string, SDL_Texture*> textures;
