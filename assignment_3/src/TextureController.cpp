@@ -1,6 +1,7 @@
 #include "TextureController.h"
 #include "GameEngine.h"
 #include "camera.h"
+#include <cmath>
 
 TextureController* TextureController::s_instance = nullptr;
 
@@ -34,13 +35,14 @@ void TextureController::render(std::string id, int x, int y, SDL_RendererFlip fl
    SDL_Rect src = {0, 0, 0, 0};
    SDL_Rect cam_rect = Camera::get_instance()->get_view();
    cam_rect.x *= speed_ratio;
-   SDL_Rect dest = {x - cam_rect.x, cam_rect.y, 0, 0};
+
+   SDL_Rect dest = {x - cam_rect.x, y, 0, 0};
+   dest.y = dest.y - cam_rect.y < 0 ? dest.y + cam_rect.y : dest.y + cam_rect.y;
 
    SDL_QueryTexture(tex, nullptr, nullptr, &src.w, &src.h);
 
    dest.w = src.w * x_scale;
    dest.h = src.h * y_scale;
-
    SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), tex, &src, &dest, rotation, nullptr, flip);
 }
 

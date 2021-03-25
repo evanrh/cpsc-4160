@@ -31,3 +31,8 @@ void Camera::update() {
 
    }
 }
+
+void Camera::set_limits(int w, int h) {
+   scene_width = w;
+   scene_height = h;
+}

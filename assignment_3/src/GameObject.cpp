@@ -60,13 +60,13 @@ void GameObject::update() {
 
    // Checks to keep the object in the bounds of the screen
 
-   SDL_Rect max = Camera::get_instance()->get_view();
+   SDL_Rect max = Camera::get_instance()->get_max();
 
    if(obj_rect.x > (max.w - obj_rect.w + (SCREEN_WIDTH / 2))) { obj_rect.x = max.w - obj_rect.w + (SCREEN_WIDTH / 2); }
    else if( obj_rect.x < 0) { obj_rect.x = 0; }
 
-   if(obj_rect.y > (max.h - obj_rect.h)) { 
-      obj_rect.y = max.h - obj_rect.h;
+   if(obj_rect.y > (max.h + obj_rect.h)) { 
+      obj_rect.y = max.h +  obj_rect.h;
       y_vel = 0;
    }
    if(obj_rect.y < 0) {

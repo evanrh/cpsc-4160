@@ -35,6 +35,7 @@ Level* MapParser::load(std::string filename) {
    tileset = header->FirstChildElement("tileset");
    tiles = header->FirstChildElement("data");
 
+   std::cout << "height, tile_h: " << height<< ", " << tile_h << "; " << height * tile_h << std::endl;
    Camera::get_instance()->set_limits(width * tile_w, height * tile_h);
    return loaded_level;
 }
