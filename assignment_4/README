@@ -1,0 +1,17 @@
+Tileset Author's Page:
+   https://draconimous.itch.io/free-platform-tileset?download
+Parallax Background Author's Page:
+   https://digitalmoons.itch.io/parallax-forest-background
+
+CONTROLS:
+Up - Jump; can be held to "fly"
+Right - move right
+Left - move left
+
+The state machine that my player uses consists for 4 states:
+   - idle
+   - jumping
+   - moving right
+   - moving left
+Each of these states has an animation, except for jumping.
+The state of the player is updated any time an input is read, or when the player reaches the ground after jumping.
