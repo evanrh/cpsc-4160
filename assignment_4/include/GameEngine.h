@@ -23,12 +23,13 @@ class GameEngine {
       void render();
       void cleanup();
       void loop();
+      void collisions();
       void update();
       void framerate();
       SDL_Renderer* get_renderer() { return renderer; }
    private:
       static GameEngine *s_instance;
-      Player* player;
+      GameObject* player;
       SDL_Renderer* renderer;
       SDL_Window* window;
       SDL_Event input;
@@ -45,4 +46,5 @@ class GameEngine {
       void init();
 };
 
+void collision_detect(GameObject &p, GameObject &q);
 #endif

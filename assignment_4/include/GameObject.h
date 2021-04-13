@@ -16,7 +16,7 @@ class GameObject {
       void init();
       void cleanup();
       void update();
-      void render();
+      virtual void render();
       void set_x_vel(double vel);
       void set_y_vel(double vel);
       void set_x_pos(unsigned pos);
@@ -26,6 +26,8 @@ class GameObject {
       double get_y_vel() {return y_vel;}
       unsigned get_x_pos() {return obj_rect.x;};
       unsigned get_y_pos() {return obj_rect.y;};
+
+      friend void collision_avoidance(GameObject &l, GameObject &r);
 
    protected:
       SDL_Rect obj_rect;

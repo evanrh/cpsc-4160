@@ -13,9 +13,11 @@ GameObject::GameObject(unsigned start_x, unsigned start_y, int w, int h, std::st
 
    TextureController::get_instance()->load(img_id, img_file);
 
-   obj_sprite = new Sprite(32, 32, 4, 1000 / 10);
+   obj_sprite = new Sprite(w, h, 4, 1000 / 10);
    x_vel = 0;
    y_vel = 0;
+
+   flip = SDL_FLIP_NONE;
 }
 
 GameObject::~GameObject() {
@@ -55,18 +57,18 @@ void GameObject::update() {
          flip = SDL_FLIP_NONE;
    }
 
-   obj_rect.x += x_vel * ((current_frame_time - last_frame_time) / 1000);
+   obj_rect.x += x_vel * ((double)(current_frame_time - last_frame_time) / 1000);
    obj_rect.y += y_vel * (double)(current_frame_time - last_frame_time) / 10;
 
-   // Checks to keep the object in the bounds of the screen
 
    SDL_Rect max = Camera::get_instance()->get_max();
 
-   if(obj_rect.x > (max.w - obj_rect.w + (SCREEN_WIDTH / 2))) { obj_rect.x = max.w - obj_rect.w + (SCREEN_WIDTH / 2); }
-   else if( obj_rect.x < 0) { obj_rect.x = 0; }
+   // Checks to keep the object in the bounds of the screen
+   if(obj_rect.x > (max.w - obj_rect.w )) { obj_rect.x = 0; }
+   else if( obj_rect.x < 0) { obj_rect.x = max.w - obj_rect.w; }
 
-   if(obj_rect.y > (max.h + obj_rect.h)) { 
-      obj_rect.y = max.h +  obj_rect.h;
+   if(obj_rect.y > (max.h - obj_rect.h)) { 
+      obj_rect.y = max.h - obj_rect.h;
       y_vel = 0;
    }
    if(obj_rect.y < 0) {
@@ -78,9 +80,7 @@ void GameObject::update() {
 }
 
 void GameObject::render() {
-   //std::cout << current_frame % 4 << std::endl;
    TextureController::get_instance()->render_frame(img_id, current_frame, obj_rect, flip, 1, 1, 0, 1);
-   //SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), obj_graphic, &current_frame, &obj_rect, 0.0, NULL, flip);
 }
 
 void GameObject::init() {

@@ -55,31 +55,44 @@ Level* MapParser::load(std::string filename) {
    unsigned i = 0, j = 0;
    std::string img_id = "tileset";
    rows = tile_count / columns;
+
    while(getline(stream, line)) {
 
-      unsigned img_x, img_y;
-      //std::cout << id << std::endl;
-      for(auto k = 0; k < rows; k++) {
-         if(((k * columns) < id) && ((k * columns + columns - 1) > id)) {
-            img_y = k * tile_h;
-            img_x = (id - (k * columns)) * tile_w;
-            //std::cout << "img_x, img_y: " << img_x << ", " << img_y << std::endl;
-            break;
+      if(line.length() == 0) {
+         continue;
+      }
+
+      std::stringstream ids(line);
+      std::string id_str;
+
+      while(getline(ids, id_str, ',')) {
+
+         unsigned id = std::stoi(id_str);
+         unsigned img_x, img_y;
+
+         if(id == 0) {
+            j++;
+            continue;
          }
+
+         for(auto k = 0; k < rows; k++) {
+            if(((k * columns) <= id) && ((k * columns + columns) >= id)) {
+               img_y = k * tile_h;
+               img_x = (id - (k * columns) - 1) * tile_w;
+               break;
+            }
+         }
+
+         Tile* current = new Tile(j * tile_w, i * tile_h, tile_w, tile_h, tileset_image, img_x, img_y);
+         loaded_level->add_tile(current);
+
+         j++;
       }
 
-      Tile* current = new Tile(i * tile_w, j * tile_h, tile_w, tile_h, tileset_image, img_x, img_y);
-      //std::cout << "x, y: " << img_x << ", " << img_y << std::endl;
-      loaded_level->add_tile(current);
-
-      j++;
-      if(j == columns) {
-         i++;
-         j = 0;
-      }
+      j = 0;
+      i++;
    }
 
-   std::cout << "height, tile_h: " << height << ", " << tile_h << "; " << height * tile_h << std::endl;
    Camera::get_instance()->set_limits(width * tile_w, height * tile_h);
    return loaded_level;
 }

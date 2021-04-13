@@ -31,7 +31,7 @@ $(BIN): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
 
 run: all
-	./$(BIN) ./res/game.xml
+	./$(BIN) ./res/joust.xml
 
 $(ODIR):
 	mkdir -p $@

@@ -83,6 +83,7 @@ void GameEngine::render() {
 void GameEngine::update() {
    player->update();
    current_level->update();
+   this->collisions();
    Camera::get_instance()->update();
 }
 
@@ -126,11 +127,13 @@ void GameEngine::handle_input() {
          case SDL_KEYDOWN:
             switch(input.key.keysym.sym) {
                case SDLK_RIGHT:
-                  player->set_x_pos(player->get_x_pos() + START_X_VEL);
+                  //player->set_x_pos(player->get_x_pos() + START_X_VEL);
+                  player->set_x_vel(START_X_VEL);
                   player->set_motion_state(OBJ_MOVE_RIGHT);
                   break;
                case SDLK_LEFT:
-                  player->set_x_pos(player->get_x_pos() - START_X_VEL);
+                  //player->set_x_pos(player->get_x_pos() - START_X_VEL);
+                  player->set_x_vel(-START_X_VEL);
                   player->set_motion_state(OBJ_MOVE_LEFT);
                   break;
                case SDLK_UP:
@@ -164,6 +167,16 @@ void GameEngine::handle_input() {
    }
 }
 
+void GameEngine::collisions() {
+
+   // Check for collision between player and all GameObjects (will be level tiles at the moment)
+
+   auto tiles = current_level->get_tiles();
+
+   for(auto tile : tiles) {
+      collision_avoidance(*player, *tile);
+   }
+}
 void GameEngine::cleanup() {
    SDL_DestroyRenderer(renderer);
    SDL_DestroyWindow(window);
@@ -171,4 +184,38 @@ void GameEngine::cleanup() {
    player->cleanup();
    IMG_Quit();
    SDL_Quit();
+}
+
+void collision_avoidance(GameObject &l, GameObject &r) {
+
+   SDL_Rect p = l.obj_rect;
+   SDL_Rect q = r.obj_rect;
+   SDL_Rect left, right, top, bot;
+
+   if(p.x < q.x) {
+      left = p;
+      right = q;
+   }
+   else {
+      left = q;
+      right = p;
+   }
+
+   if(p.y < q.y) {
+      top = p;
+      bot = q;
+   }
+   else {
+      top = q;
+      bot = p;
+   }
+
+   if(!((left.x + left.w) < right.x)) {
+      if(!((top.y + top.h) < bot.y)) {
+         l.obj_rect.y = bot.y - top.h;
+         l.y_vel = 0;
+         //l.obj_rect.x -= right.x - left.w;
+      }
+   }
+   
 }

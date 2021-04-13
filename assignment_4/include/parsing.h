@@ -15,9 +15,10 @@ class Level {
       void add_background_layer(BackgroundLayer& bg) { bg_layers.push_back(bg); }
       void update() {}
       void render();
+      std::vector<GameObject*> get_tiles() { return this->tiles; };
 
    private:
-      std::vector<Tile*> tiles;
+      std::vector<GameObject*> tiles;
       std::vector<BackgroundLayer> bg_layers; // Background layers. Rendered in back-to-front order
 };
 
