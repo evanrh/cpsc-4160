@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game>
+   <player width="32" height="32" file="./sprites/player.png">
+   </player>
+   <level file="./maps/level.tmx">
+      <layer id="sky" file="./bg/10_Sky.png"></layer>
+      <layer id="forest_9" file="./bg/09_Forest.png"></layer>
+      <layer id="forest_8" file="./bg/08_Forest.png"></layer>
+      <layer id="forest_7" file="./bg/07_Forest.png"></layer>
+      <layer id="forest_6" file="./bg/06_Forest.png"></layer>
+      <layer id="forest_4" file="./bg/04_Forest.png"></layer>
+      <layer id="bushes" file="./bg/02_Bushes.png"></layer>
+   </level>
+</game>
