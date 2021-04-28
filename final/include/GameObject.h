@@ -15,8 +15,9 @@ class GameObject {
 
       void init();
       void cleanup();
-      void update();
+      virtual void update();
       virtual void render();
+      virtual void set_collision_box(unsigned x, unsigned y, unsigned w, unsigned h);
       void set_x_vel(double vel);
       void set_y_vel(double vel);
       void set_x_pos(unsigned pos);
@@ -26,12 +27,15 @@ class GameObject {
       double get_y_vel() {return y_vel;}
       unsigned get_x_pos() {return obj_rect.x;};
       unsigned get_y_pos() {return obj_rect.y;};
+      SDL_Rect get_collision_box();
 
-      friend void collision_avoidance(GameObject &l, GameObject &r);
+      friend bool collision_avoidance(GameObject &l, GameObject &r);
 
    protected:
       SDL_Rect obj_rect;
       SDL_Rect current_frame;
+      SDL_Rect collision_box;
+      bool collidable;
       std::string img_id;
       Sprite* obj_sprite;
       double x_vel;

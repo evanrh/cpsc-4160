@@ -4,6 +4,7 @@
 Tile::Tile(unsigned x, unsigned y, unsigned w, unsigned h, std::string tileset_image, unsigned img_x, unsigned img_y) :
    img_x(img_x), img_y(img_y), GameObject(x, y, w, h, "tileset", tileset_image)
 {
+   this->set_collision_box(0, 0, w, h);
 }
 
 void Tile::render() {

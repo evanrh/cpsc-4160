@@ -18,6 +18,7 @@ GameObject::GameObject(unsigned start_x, unsigned start_y, int w, int h, std::st
    y_vel = 0;
 
    flip = SDL_FLIP_NONE;
+   collidable = false;
 }
 
 GameObject::~GameObject() {
@@ -83,6 +84,17 @@ void GameObject::render() {
    TextureController::get_instance()->render_frame(img_id, current_frame, obj_rect, flip, 1, 1, 0, 1);
 }
 
+void GameObject::set_collision_box(unsigned x, unsigned y, unsigned w, unsigned h) {
+   collidable = true;
+   collision_box.x = x;
+   collision_box.y = y;
+   collision_box.w = w;
+   collision_box.h = h;
+}
+
+SDL_Rect GameObject::get_collision_box() {
+   return {collision_box.x + obj_rect.x, collision_box.y + obj_rect.y, collision_box.w, collision_box.h};
+}
 void GameObject::init() {
 
 }

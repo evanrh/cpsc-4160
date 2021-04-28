@@ -30,6 +30,11 @@ void GameEngine::init() {
                w_flags
                );
    IMG_Init(IMG_INIT_PNG);
+
+   if(TTF_Init() < 0) {
+      std::cerr << "Could not load SDL_ttf lib" << std::endl;
+   }
+
    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
    if(!renderer) {
       std::cerr << "Could not create renderer." << SDL_GetError() << std::endl;
@@ -58,8 +63,13 @@ void GameEngine::load_game(std::string game_filename) {
    gp->load_game(game_filename);
    player = gp->get_player();
 
+   // Hardcoded player collision box
+   //player->set_collision_box(8, 16, 16, 16);
+   player->set_collision_box(8, 15, 16, 17);
+
    Camera::get_instance()->set_target(player);
-   levels = gp->get_levels(renderer);
+   levels = gp->get_levels();
+   ui_elems = gp->get_ui_elems();
 
    if(levels.size() < 1) {
       std::cerr << "Please specify a level in the game setup!" << std::endl;
@@ -72,11 +82,17 @@ void GameEngine::load_game(std::string game_filename) {
 
 void GameEngine::render() {
    SDL_RenderClear(renderer);
+
+   /*
+   for(auto elem : ui_elems) {
+      elem->render();
+   }
+   */
+
+   std::cout << "Am here" << std::endl;
    current_level->render();
    player->render();
 
-   //SDL_Rect cam = Camera::get_instance()->get_view();
-   //SDL_RenderCopy(renderer, NULL, &cam, NULL);
    SDL_RenderPresent(renderer);
 }
 
@@ -172,24 +188,35 @@ void GameEngine::collisions() {
    // Check for collision between player and all GameObjects (will be level tiles at the moment)
 
    auto tiles = current_level->get_tiles();
+   bool collided = false;
 
+   /*
    for(auto tile : tiles) {
-      collision_avoidance(*player, *tile);
+      if(collided) {
+         collision_avoidance(*player, *tile);
+      }
+      else {
+         collided = collision_avoidance(*player, *tile);
+      }
    }
+   */
 }
 void GameEngine::cleanup() {
    SDL_DestroyRenderer(renderer);
    SDL_DestroyWindow(window);
+   TTF_Quit();
 
    player->cleanup();
    IMG_Quit();
    SDL_Quit();
 }
 
-void collision_avoidance(GameObject &l, GameObject &r) {
+bool collision_avoidance(GameObject &l, GameObject &r) {
 
-   SDL_Rect p = l.obj_rect;
-   SDL_Rect q = r.obj_rect;
+   if(not l.collidable or not r.collidable) return false;
+
+   SDL_Rect p = l.get_collision_box();
+   SDL_Rect q = r.get_collision_box();
    SDL_Rect left, right, top, bot;
 
    if(p.x < q.x) {
@@ -212,14 +239,17 @@ void collision_avoidance(GameObject &l, GameObject &r) {
 
    if(!((left.x + left.w) < right.x)) {
       if(!((top.y + top.h) < bot.y)) {
+         /*
          if(l.y_vel > 0) {
             l.y_vel = 0;
-            l.obj_rect.y = bot.y - top.h;
+            l.obj_rect.y = bot.y - l.obj_rect.h;
          }
          else if(l.y_vel < 0) {
             l.y_vel = 0;
             l.obj_rect.y = top.y + top.h + 1;
          }
+         */
+         return true;
          /*
          if(l.x_vel > 0) {
             l.x_vel = 0;
@@ -232,5 +262,6 @@ void collision_avoidance(GameObject &l, GameObject &r) {
          */
       }
    }
+   return false;
    
 }

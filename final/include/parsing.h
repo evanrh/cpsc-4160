@@ -2,12 +2,15 @@
 #define PARSING_H
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <tinyxml2/tinyxml2.h>
 #include <string>
 #include <vector>
+#include <map>
 #include "tileset.h"
 #include "Player.h"
 #include "layers.h"
+#include "ui.h"
 
 class Level {
    public:
@@ -41,7 +44,8 @@ class GameParser {
       void load_game(std::string filename);
       void cleanup();
       Player* get_player(void);
-      std::vector<Level*> get_levels(SDL_Renderer* ren);
+      std::vector<Level*> get_levels();
+      std::vector<UIElement*> get_ui_elems();
    private:
       GameParser() {}
       static GameParser* game_instance;

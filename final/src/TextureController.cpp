@@ -21,6 +21,19 @@ bool TextureController::load(std::string id, std::string filename) {
    return true;
 }
 
+bool TextureController::load_font(std::string id, std::string filename) {
+   int ptsize = 28;
+   TTF_Font* f = TTF_OpenFont(filename.c_str(), ptsize);
+
+   if(!f) {
+      std::cerr << "Could not load font: " << TTF_GetError() << std::endl;
+      return false;
+   }
+   this->fonts[id] = f;
+
+   return true;
+}
+
 void TextureController::drop(std::string id) {
 
 }
@@ -60,4 +73,19 @@ void TextureController::render_frame(std::string id, SDL_Rect src, SDL_Rect dest
    dest.h *= y_scale;
 
    SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), tex, &src, &dest, rotation, nullptr, flip);
+}
+
+void TextureController::render_ui(std::string id, int x, int y) {
+
+}
+
+void TextureController::render_text(std::string font_id, std::string text, SDL_Rect dest) {
+   SDL_Color black = {0, 0, 0};
+   SDL_Surface *rendered = TTF_RenderText_Solid(this->fonts[font_id], text.c_str(), black);
+   SDL_Texture *tex = SDL_CreateTextureFromSurface(GameEngine::get_instance()->get_renderer(), rendered);
+
+   SDL_RenderCopy(GameEngine::get_instance()->get_renderer(), tex, nullptr, &dest);
+
+   SDL_FreeSurface(rendered);
+   SDL_DestroyTexture(tex);
 }

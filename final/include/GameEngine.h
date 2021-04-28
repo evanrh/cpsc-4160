@@ -7,12 +7,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "globals.h"
 #include "GameObject.h"
 #include "Player.h"
 #include "parsing.h"
-
+#include "ui.h"
 
 class GameEngine {
    public:
@@ -27,6 +28,8 @@ class GameEngine {
       void update();
       void framerate();
       SDL_Renderer* get_renderer() { return renderer; }
+      Level* get_level() { return current_level ;}
+      Player* get_player() { return static_cast<Player*>(player) ;}
    private:
       static GameEngine *s_instance;
       GameObject* player;
@@ -39,6 +42,7 @@ class GameEngine {
       unsigned start_time;
       unsigned y_start_time;
       std::vector<Level*> levels;
+      std::vector<UIElement*> ui_elems;
       Level* current_level;
 
       GameEngine();
@@ -46,5 +50,4 @@ class GameEngine {
       void init();
 };
 
-void collision_detect(GameObject &p, GameObject &q);
 #endif
