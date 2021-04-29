@@ -19,7 +19,7 @@ _OBJ = GameEngine.o GameObject.o Player.o Sprite.o parsing.o TextureController.o
 OBJ := $(patsubst %, $(ODIR)/%, $(_OBJ))
 
 .PHONY: all
-all: $(ODIR) $(LIBS) $(BIN)
+all: $(ODIR) $(LIBDIR) $(LIBS) $(BIN)
 
 $(LIBDIR)/tinyxml2.a: $(SRCDIR)/tinyxml2/tinyxml2.cpp
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -34,6 +34,9 @@ run: all
 	./$(BIN) ./res/joust.xml
 
 $(ODIR):
+	mkdir -p $@
+
+$(LIBDIR):
 	mkdir -p $@
 
 .PHONY: clean
