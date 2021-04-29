@@ -10,6 +10,7 @@ UIElement::UIElement(int x, int y, unsigned w, unsigned h, std::string img_id, s
    this->img_id = img_id;
    this->font = font;
    TextureController::get_instance()->load(img_id, img_file);
+   text_tex = nullptr;
 }
 
 void UIElement::update() {
@@ -26,7 +27,7 @@ void UIElement::reset() {
 }
 
 void LifeCounter::update() {
-
+   current_lives = GameEngine::get_instance()->get_player()->get_lives();
 }
 
 void LifeCounter::reset() {
@@ -35,6 +36,13 @@ void LifeCounter::reset() {
 }
 
 void LifeCounter::render() {
-   unsigned lives = GameEngine::get_instance()->get_player()->get_lives();
-   TextureController::get_instance()->render_text(font, std::to_string(lives), ui_rect);
+   if(current_lives != previous_lives) {
+      std::string text = std::to_string(current_lives) + " lives";
+      if(text_tex != nullptr) {
+         SDL_DestroyTexture(text_tex);
+      }
+      text_tex = TextureController::get_instance()->render_text(font, text, ui_rect);
+   }
+   TextureController::get_instance()->display_text(text_tex, ui_rect);
+   previous_lives = current_lives;
 }

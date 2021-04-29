@@ -18,6 +18,7 @@ class UIElement {
 
    protected:
       SDL_Rect ui_rect;
+      SDL_Texture* text_tex;
       std::string img_id;
       std::string font;
 };
@@ -37,6 +38,8 @@ class LifeCounter: public UIElement {
       virtual void update();
       virtual void reset();
       virtual void render();
+   private:
+      unsigned current_lives = 0, previous_lives = 0;
 };
 
 #endif

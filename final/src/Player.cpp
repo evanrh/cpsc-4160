@@ -6,6 +6,8 @@
 #include "camera.h"
 
 Player::Player(int w, int h, std::string sprite_filename) : GameObject(0, 0, w, h, "player_sprite", sprite_filename) {
+   original_x = 0;
+   original_y = 0;
    lives = 3;
 }
 
@@ -37,8 +39,16 @@ void Player::update() {
       if(collision_avoidance(*this, *tile)) {
          x_vel = 0;
          obj_rect.x -= x_vel * ((double)(current_frame_time - last_frame_time) / 1000);
+
+         if(tile->is_harmful()) {
+            lives -= 1;
+            this->reset();
+            return;
+         }
+
          break;
       }
+
    }
 
    obj_rect.y += y_vel * (double)(current_frame_time - last_frame_time) / 10;
@@ -46,7 +56,15 @@ void Player::update() {
       if(collision_avoidance(*this, *tile)) {
          y_vel = 0;
          obj_rect.y -= y_vel * ((double)(current_frame_time - last_frame_time) / 10);
+
+         if(tile->is_harmful()) {
+            lives -= 1;
+            this->reset();
+            return;
+         }
+
          break;
+
       }
    }
 
@@ -67,4 +85,9 @@ void Player::update() {
    }
 
    last_frame_time = current_frame_time;
+}
+
+void Player::reset() {
+   obj_rect.x = original_x;
+   obj_rect.y = original_y;
 }

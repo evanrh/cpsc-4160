@@ -2,6 +2,7 @@
 #include "parsing.h"
 #include "GameEngine.h"
 #include "camera.h"
+#include "TextureController.h"
 
 GameEngine* GameEngine::s_instance = nullptr;
 
@@ -83,15 +84,12 @@ void GameEngine::load_game(std::string game_filename) {
 void GameEngine::render() {
    SDL_RenderClear(renderer);
 
-   /*
+   current_level->render();
+   player->render();
+
    for(auto elem : ui_elems) {
       elem->render();
    }
-   */
-
-   std::cout << "Am here" << std::endl;
-   current_level->render();
-   player->render();
 
    SDL_RenderPresent(renderer);
 }
@@ -101,6 +99,10 @@ void GameEngine::update() {
    current_level->update();
    this->collisions();
    Camera::get_instance()->update();
+
+   for(auto elem : ui_elems) {
+      elem->update();
+   }
 }
 
 void GameEngine::framerate() {
@@ -206,6 +208,7 @@ void GameEngine::cleanup() {
    SDL_DestroyWindow(window);
    TTF_Quit();
 
+   TextureController::get_instance()->cleanup();
    player->cleanup();
    IMG_Quit();
    SDL_Quit();

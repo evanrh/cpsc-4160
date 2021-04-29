@@ -17,6 +17,9 @@ namespace fs = std::filesystem;
 MapParser *MapParser::map_instance = nullptr;
 GameParser *GameParser::game_instance = nullptr;
 
+std::map<int, bool> tile_info;
+int no_collide[10] = {119, 102, 103, 104, 105, 120, 121, 122, 137, 138};
+
 void Level::render() {
    for(auto bg : bg_layers) {
       bg.render();
@@ -31,6 +34,11 @@ void Level::add_tile(Tile *t) {
 }
 
 Level* MapParser::load(std::string filename) {
+
+   for(auto i : no_collide) {
+      tile_info[i] = false;
+   }
+
    int width, height;
    int tile_h, tile_w, columns, rows, tile_count;
    Level* loaded_level = new Level();
@@ -93,8 +101,16 @@ Level* MapParser::load(std::string filename) {
             }
          }
 
+         bool collidable = true;
+         if(tile_info.count(id) > 0) {
+            collidable = false;
+         }
+
          // Create a new tile and add it to the level object
-         Tile* current = new Tile(j * tile_w, i * tile_h, tile_w, tile_h, tileset_image, img_x, img_y);
+         Tile* current = new Tile(j * tile_w, i * tile_h, tile_w, tile_h, tileset_image, img_x, img_y, collidable);
+         if(i == 14) {
+            current->set_harmful(true);
+         }
          loaded_level->add_tile(current);
 
          j++;
@@ -186,6 +202,9 @@ std::vector<UIElement*> GameParser::get_ui_elems() {
 
    root = game_file->FirstChildElement("game");
    ui_root = root->FirstChildElement("ui");
+   if(ui_root == nullptr) {
+      return elems;
+   }
    curr_elem = ui_root->FirstChildElement("element");
    font = ui_root->FirstChildElement("font");
 

@@ -19,7 +19,8 @@ class TextureController {
        void render(std::string id, int x, int y, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio);
        void render_frame(std::string id, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio);
        void render_ui(std::string id, int x, int y);
-       void render_text(std::string font_id, std::string text, SDL_Rect dest);
+       void display_text(SDL_Texture *text, SDL_Rect dest);
+       SDL_Texture* render_text(std::string font_id, std::string text, SDL_Rect dest);
 
    private:
       std::map<std::string, SDL_Texture*> textures;

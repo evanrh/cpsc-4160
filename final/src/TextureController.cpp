@@ -1,7 +1,7 @@
+#include <cmath>
 #include "TextureController.h"
 #include "GameEngine.h"
 #include "camera.h"
-#include <cmath>
 
 TextureController* TextureController::s_instance = nullptr;
 
@@ -22,7 +22,7 @@ bool TextureController::load(std::string id, std::string filename) {
 }
 
 bool TextureController::load_font(std::string id, std::string filename) {
-   int ptsize = 28;
+   int ptsize = 24;
    TTF_Font* f = TTF_OpenFont(filename.c_str(), ptsize);
 
    if(!f) {
@@ -39,7 +39,9 @@ void TextureController::drop(std::string id) {
 }
 
 void TextureController::cleanup() {
-
+   for(auto it : this->textures) {
+      SDL_DestroyTexture(it.second);
+   }
 }
 
 void TextureController::render(std::string id, int x, int y, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio) {
@@ -79,13 +81,16 @@ void TextureController::render_ui(std::string id, int x, int y) {
 
 }
 
-void TextureController::render_text(std::string font_id, std::string text, SDL_Rect dest) {
-   SDL_Color black = {0, 0, 0};
-   SDL_Surface *rendered = TTF_RenderText_Solid(this->fonts[font_id], text.c_str(), black);
+void TextureController::display_text(SDL_Texture* text, SDL_Rect dest) {
+   SDL_RenderCopy(GameEngine::get_instance()->get_renderer(), text, nullptr, &dest);
+}
+
+SDL_Texture* TextureController::render_text(std::string font_id, std::string text, SDL_Rect dest) {
+   SDL_Color black = {0, 0, 0, 0};
+   SDL_Color bg = {255, 255, 255, 0};
+   SDL_Surface *rendered = TTF_RenderText_Shaded(this->fonts[font_id], text.c_str(), black, bg);
    SDL_Texture *tex = SDL_CreateTextureFromSurface(GameEngine::get_instance()->get_renderer(), rendered);
-
-   SDL_RenderCopy(GameEngine::get_instance()->get_renderer(), tex, nullptr, &dest);
-
+   std::cout << tex << std::endl;
    SDL_FreeSurface(rendered);
-   SDL_DestroyTexture(tex);
+   return tex;
 }

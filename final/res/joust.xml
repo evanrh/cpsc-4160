@@ -4,7 +4,7 @@
    </player>
    <ui>
       <font name="main" source="./res/Calibri.ttf" />
-      <element font="main" name="lives" loc="br" start="3" height="40" width="50" source="./res/sprites/heart_icon.png"/>
+      <element font="main" name="lives" loc="tl" start="3" height="20" width="60" source="./res/sprites/heart_icon.png"/>
       <screen font="main" type="pause" source=""/>
       <screen font="main" type="start" source=""/>
       <screen font="main" type="gameover" source=""/>

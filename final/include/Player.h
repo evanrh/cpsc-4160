@@ -14,9 +14,11 @@ class Player: public GameObject {
       Player(int w, int h, std::string sprite_filename);
       ~Player();
       virtual void update();
+      void reset();
       void set_lives(unsigned l) { lives = l ;}
       unsigned get_lives() { return lives ;}
    private:
       unsigned lives;
+      int original_x, original_y;
 };
 #endif

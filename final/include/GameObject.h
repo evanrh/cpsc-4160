@@ -22,11 +22,13 @@ class GameObject {
       void set_y_vel(double vel);
       void set_x_pos(unsigned pos);
       void set_y_pos(unsigned pos);
-      void set_motion_state(unsigned state) {motion_state = state;}
-      double get_x_vel() {return x_vel;}
-      double get_y_vel() {return y_vel;}
-      unsigned get_x_pos() {return obj_rect.x;};
-      unsigned get_y_pos() {return obj_rect.y;};
+      void set_motion_state(unsigned state) { motion_state = state; }
+      void set_harmful(bool v) { harmful = v; }
+      bool is_harmful() {return harmful; }
+      double get_x_vel() { return x_vel; }
+      double get_y_vel() { return y_vel; }
+      unsigned get_x_pos() { return obj_rect.x; }
+      unsigned get_y_pos() { return obj_rect.y; }
       SDL_Rect get_collision_box();
 
       friend bool collision_avoidance(GameObject &l, GameObject &r);
@@ -36,6 +38,7 @@ class GameObject {
       SDL_Rect current_frame;
       SDL_Rect collision_box;
       bool collidable;
+      bool harmful;
       std::string img_id;
       Sprite* obj_sprite;
       double x_vel;
