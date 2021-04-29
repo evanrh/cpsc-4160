@@ -103,6 +103,10 @@ void GameEngine::update() {
    for(auto elem : ui_elems) {
       elem->update();
    }
+
+   if(static_cast<Player*>(player)->get_lives() == 0) {
+      running = false;
+   }
 }
 
 void GameEngine::framerate() {
