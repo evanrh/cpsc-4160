@@ -1,3 +1,7 @@
+Evan Hastings
+CPSC 6160
+Boxman
+
 Tileset Author's Page:
    https://draconimous.itch.io/free-platform-tileset?download
 Parallax Background Author's Page:
@@ -6,14 +10,36 @@ Other Background Page:
    https://gameartpartners.com/downloads/tileset-platformer-game-pack-2d-city/
 
 CONTROLS:
-Up - Jump; can be held to "fly"
-Right - move right
-Left - move left
+    Up - Jump; can be held to "fly"
+    Right - move right
+    Left - move left
 
-The state machine that my player uses consists for 4 states:
-   - idle
-   - jumping
-   - moving right
-   - moving left
-Each of these states has an animation, except for jumping.
-The state of the player is updated any time an input is read, or when the player reaches the ground after jumping.
+GENERAL:
+    You win by touching the treasure chest on each level.
+    You will die by touching any water on the level.
+    Run the game with "make run", as it requires a game setup file to run
+
+DESIGN:
+    Most classes in this game are controlled by a singleton class, such as the TextureController, GameEngine, and Camera.
+    All of the rendering is done from a camera perspective, and each object only knows the id of its texture.
+    This allowed for a better rendering process, as all of the rendering can be handled by one class, with minimal knowledge by other classes.
+
+    Almost everything that renders is a GameObject, and every object inherits from this in some way.
+    Things like the UI and Screens have their own classes separate from the GameObject.
+    
+    The majority of the game can be customized using a couple XML files, one written by the user, and the other coming from the Tiled editor.
+    The map files from Tiled use a map encoded as a csv of tile id's from a tileset image.
+    The other XML file is the game setup file, which allows the user to include details about levels, UI elements, and background layers.
+    For an example of the game setup file, see "./res/joust.xml" and for the map data, see "./res/maps/joust_level.tmx"
+    The game setup file is interesting, because you can have a variable amount of levels, that will only progress when the win condition is met.
+    The joust file above includes both levels I used in testing, and it shows off that the game "can" scroll, but that it does not have to.
+
+    Next, I'll talk about the sprites.
+    The sprites expect a standard format, and they are not very flexible unfortunately.
+    The sprite sheet should follow the following format:
+        First row: Idle animation
+        Second row: Running animation
+        Third row: Jumping animation
+    I only implemented sprites in the Player class, although the rendering method uses one of the generalized methods from the TextureController singleton.
+    This means it would not be difficult to add in another object that has sprite animations, as long as it follows the above format.
+
