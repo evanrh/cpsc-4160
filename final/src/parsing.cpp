@@ -20,9 +20,11 @@ GameParser *GameParser::game_instance = nullptr;
 // Properties for tiles. Some are harmful, one is a win condition, and some have collision
 std::map<int, bool> tile_info;
 std::map<int, bool> harmful_tiles;
-int no_collide[10] = {119, 102, 103, 104, 105, 120, 121, 122, 137, 138};
+int no_collide[11] = {119, 103, 104, 105, 106, 120, 121, 122, 123, 138, 139};
 int harmful[4] = {115, 116, 117, 118};
-int win_id = 129;
+int win_id = 140;
+
+Level::Level(unsigned w, unsigned h, unsigned tile_w, unsigned tile_h) : width(w), height(h), tile_w(tile_w), tile_h(tile_h) {}
 
 void Level::render() {
    for(auto bg : bg_layers) {
@@ -37,6 +39,9 @@ void Level::add_tile(Tile *t) {
    tiles.push_back(t);
 }
 
+void Level::set_camera_lims() {
+   Camera::get_instance()->set_limits(width * tile_w, height * tile_h);
+}
 Level* MapParser::load(std::string filename) {
 
    for(auto i : no_collide) {
@@ -48,7 +53,6 @@ Level* MapParser::load(std::string filename) {
 
    int width, height;
    int tile_h, tile_w, columns, rows, tile_count;
-   Level* loaded_level = new Level();
    tinyxml2::XMLElement *header, *tiles, *tileset;
    tinyxml2::XMLDocument map_file;
    map_file.LoadFile(filename.c_str());
@@ -61,6 +65,7 @@ Level* MapParser::load(std::string filename) {
    header->QueryIntAttribute("tileheight", &tile_h);
    tileset = header->FirstChildElement("tileset");
 
+   Level* loaded_level = new Level(width, height, tile_w, tile_h);
    // Get dimensions of tileset
    unsigned img_w = std::stoi(tileset->FirstChildElement("image")->Attribute("width"));
    unsigned img_h = std::stoi(tileset->FirstChildElement("image")->Attribute("height"));
@@ -131,7 +136,6 @@ Level* MapParser::load(std::string filename) {
    }
 
    // Set level limits
-   Camera::get_instance()->set_limits(width * tile_w, height * tile_h);
    return loaded_level;
 }
 
@@ -193,7 +197,7 @@ std::vector<Level*> GameParser::get_levels() {
          fs::path layer_path = root_filepath;
          layer_path /= layer->Attribute("source");
 
-         BackgroundLayer bg(tex_id, layer_path.c_str(), 0, 0, scroll_speed, 0.5f, 0.7f);
+         BackgroundLayer bg(tex_id, layer_path.c_str(), 0, 0, scroll_speed, 1.0f, 1.0f);
          scroll_speed *= 2;
          current_level->add_background_layer(bg);
 
@@ -310,11 +314,13 @@ std::map<std::string, Screen*> GameParser::get_screens() {
       }
       // Parse other types of UI elements
       else if(type == "start") {
+         std::string src = curr_screen->Attribute("source");
+         screen = new StartScreen("start", src);
 
       }
       else if(type == "gameover") {
          std::string src = curr_screen->Attribute("source");
-         screen = new ImageScreen(font_name, src);
+         screen = new ImageScreen("gameover", src);
       }
 
       screens[type] = screen;

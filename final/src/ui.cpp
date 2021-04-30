@@ -112,7 +112,7 @@ void PauseScreen::handle_input() {
       switch(input.type) {
          case SDL_QUIT:
             GameEngine::get_instance()->unpause();
-            GameEngine::get_instance()->stop_game();
+            GameEngine::get_instance()->stop_running();
             break;
          case SDL_KEYDOWN:
             switch(input.key.keysym.sym) {
@@ -140,7 +140,6 @@ ImageScreen::ImageScreen(std::string img_id, std::string img_file) {
 void ImageScreen::render() {
 
    SDL_Rect dims = TextureController::get_instance()->get_img_dims(img_id);
-   std::cout << dims.w << " " << dims.h << std::endl;
    int x = (SCREEN_WIDTH / 2) - (dims.w / 2);
    int y = (SCREEN_HEIGHT / 2) - (dims.h / 2);
    SDL_RenderClear(GameEngine::get_instance()->get_renderer());
@@ -158,4 +157,36 @@ void ImageScreen::handle_input() {
 
 void ImageScreen::update() {
 
+}
+
+StartScreen::StartScreen(std::string img_id, std::string img_file) {
+   this->img_id = img_id;
+   TextureController::get_instance()->load(img_id, img_file);
+
+}
+
+void StartScreen::update() {
+
+}
+
+void StartScreen::handle_input() {
+
+   GameEngine *gp = GameEngine::get_instance();
+   while(SDL_PollEvent(&this->input)) {
+      switch(input.type) {
+         case SDL_QUIT:
+            gp->start_game();
+            gp->stop_running();
+            break;
+         case SDL_KEYDOWN:
+            switch(input.key.keysym.sym) {
+               case SDLK_RETURN:
+                  gp->start_game();
+                  break;
+               default:
+                  break;
+            }
+            break;
+      }
+   }
 }

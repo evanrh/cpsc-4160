@@ -7,11 +7,13 @@
       <element font="main" name="lives" loc="tl" start="3" height="20" width="60" source="./res/sprites/heart_icon.png"/>
       <element font="main" name="frames" loc="tr" height="20" width="40"/>
       <screen font="main" type="pause" source=""/>
-      <screen font="main" type="start" source=""/>
+      <screen font="main" type="start" source="./res/screens/joust_start_screen.png"/>
       <screen font="main" type="gameover" source="./res/screens/gameover.png"/>
    </ui>
    <level source="./maps/joust_level.tmx">
-      <layer id="sky" source="./bg/10_Sky.png"></layer>
+      <layer id="sky" source="./bg/joust_bg.png"></layer>
+   </level>
+   <level source="./maps/level.tmx">
       <layer id="forest_9" source="./bg/09_Forest.png"></layer>
       <layer id="forest_8" source="./bg/08_Forest.png"></layer>
       <layer id="forest_7" source="./bg/07_Forest.png"></layer>
@@ -19,4 +21,6 @@
       <layer id="forest_4" source="./bg/04_Forest.png"></layer>
       <layer id="bushes" source="./bg/02_Bushes.png"></layer>
    </level>
+
+<layer id="city" source="./bg/joust_bg" />
 </game>

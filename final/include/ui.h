@@ -36,6 +36,7 @@ class Screen {
       virtual void update() = 0;
       void add_element(UIElement* e) { options.push_back(e); }
    protected:
+      SDL_Event input;
       std::vector<UIElement*> options;
 };
 
@@ -48,18 +49,26 @@ class PauseScreen: public Screen {
        void update();
     private:
        SDL_Color col;
-       SDL_Event input;
 };
 
 // Image Displaying Screen i.e start or death screen
 class ImageScreen: public Screen {
     public:
+        ImageScreen() {}
         ImageScreen(std::string img_id, std::string img_file);
-        void render();
-        void handle_input();
-        void update();
-    private:
+        virtual void render();
+        virtual void handle_input();
+        virtual void update();
+    protected:
         std::string img_id;
+};
+
+// Start screen of Game
+class StartScreen: public ImageScreen {
+   public:
+      StartScreen(std::string img_id, std::string img_file);
+      void update();
+      void handle_input();
 };
 
 // Lives UI Element

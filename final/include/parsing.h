@@ -14,13 +14,18 @@
 
 class Level {
    public:
+      Level(unsigned w, unsigned h, unsigned tile_w, unsigned tile_h);
       void add_tile(Tile *t);
       void add_background_layer(BackgroundLayer& bg) { bg_layers.push_back(bg); }
+      void set_tile_w(unsigned w) { tile_w = w; }
+      void set_tile_h(unsigned h) { tile_h = h; }
+      void set_camera_lims();
       void update() {}
       void render();
       std::vector<GameObject*> get_tiles() { return this->tiles; };
 
    private:
+      unsigned width, height, tile_w, tile_h;
       std::vector<GameObject*> tiles;
       std::vector<BackgroundLayer> bg_layers; // Background layers. Rendered in back-to-front order
 };

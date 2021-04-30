@@ -43,9 +43,18 @@ void GameEngine::init() {
 
 
    inited = true;
+   start = false;
 }
 
 void GameEngine::loop() {
+
+   // Loop at start screen
+   while(!start) {
+      Screen* s = screens["start"];
+      s->handle_input();
+      s->update();
+      s->render();
+   }
 
    while(running) {
       if(not paused) {
@@ -62,8 +71,10 @@ void GameEngine::loop() {
       }
    }
 
-   screens["gameover"]->render();
-   SDL_Delay(5000);
+   if(gameover) {
+      screens["gameover"]->render();
+      SDL_Delay(5000);
+   }
 }
 
 void GameEngine::load_game(std::string game_filename) {
@@ -91,11 +102,13 @@ void GameEngine::load_game(std::string game_filename) {
    }
    current_level = levels[0];
    current_level_id = 0;
+   current_level->set_camera_lims();
    gp->cleanup();
 }
 
 void GameEngine::render() {
-   //SDL_RenderClear(renderer);
+   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+   SDL_RenderClear(renderer);
 
    current_level->render();
    player->render();
@@ -119,6 +132,7 @@ void GameEngine::update() {
 
    if(static_cast<Player*>(player)->get_lives() == 0) {
       running = false;
+      gameover = true;
    }
 }
 
@@ -278,5 +292,6 @@ void GameEngine::next_level() {
    }
    else {
       current_level = levels[current_level_id];
+      current_level->set_camera_lims();
    }
 }

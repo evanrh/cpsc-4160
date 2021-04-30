@@ -7,5 +7,5 @@
 #define START_X_VEL 500
 #define START_Y_VEL 7
 #define MAX_Y_VEL 300
-#define GRAVITY -10
+#define GRAVITY -5
 #endif

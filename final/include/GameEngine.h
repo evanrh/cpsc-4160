@@ -27,9 +27,9 @@ class GameEngine {
       void loop();
       void collisions();
       void update();
-      void framerate();
       void next_level();
-      void stop_game() { running = false; }
+      void start_game() { start = true; }
+      void stop_running() { running = false; }
       void pause() { paused = true; }
       void unpause() { paused = false; }
       SDL_Renderer* get_renderer() { return renderer; }
@@ -42,7 +42,7 @@ class GameEngine {
       SDL_Renderer* renderer;
       SDL_Window* window;
       SDL_Event input;
-      bool running = true, inited = false, paused = false;
+      bool running = true, inited = false, paused = false, gameover = false, start = false;
       unsigned current_time, start_time, y_start_time, framerate;
       std::vector<Level*> levels;
       std::vector<UIElement*> ui_elems;
