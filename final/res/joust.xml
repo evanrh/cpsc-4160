@@ -5,9 +5,10 @@
    <ui>
       <font name="main" source="./res/Calibri.ttf" />
       <element font="main" name="lives" loc="tl" start="3" height="20" width="60" source="./res/sprites/heart_icon.png"/>
+      <element font="main" name="frames" loc="tr" height="20" width="40"/>
       <screen font="main" type="pause" source=""/>
       <screen font="main" type="start" source=""/>
-      <screen font="main" type="gameover" source=""/>
+      <screen font="main" type="gameover" source="./res/screens/gameover.png"/>
    </ui>
    <level source="./maps/joust_level.tmx">
       <layer id="sky" source="./bg/10_Sky.png"></layer>

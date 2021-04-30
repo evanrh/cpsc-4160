@@ -3,9 +3,11 @@
 #include "GameEngine.h"
 #include "camera.h"
 
+using std::string;
+
 TextureController* TextureController::s_instance = nullptr;
 
-bool TextureController::load(std::string id, std::string filename) {
+bool TextureController::load(string id, string filename) {
    SDL_Renderer* ren = GameEngine::get_instance()->get_renderer();
    SDL_Surface* surf = IMG_Load(filename.c_str());
    SDL_Texture* tex = SDL_CreateTextureFromSurface(ren,surf);
@@ -21,7 +23,7 @@ bool TextureController::load(std::string id, std::string filename) {
    return true;
 }
 
-bool TextureController::load_font(std::string id, std::string filename) {
+bool TextureController::load_font(string id, string filename) {
    int ptsize = 24;
    TTF_Font* f = TTF_OpenFont(filename.c_str(), ptsize);
 
@@ -34,7 +36,7 @@ bool TextureController::load_font(std::string id, std::string filename) {
    return true;
 }
 
-void TextureController::drop(std::string id) {
+void TextureController::drop(string id) {
 
 }
 
@@ -44,7 +46,7 @@ void TextureController::cleanup() {
    }
 }
 
-void TextureController::render(std::string id, int x, int y, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio) {
+void TextureController::render(string id, int x, int y, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio) {
    SDL_Texture *tex = textures[id];
 
    SDL_Rect src = {0, 0, 0, 0};
@@ -61,7 +63,7 @@ void TextureController::render(std::string id, int x, int y, SDL_RendererFlip fl
    SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), tex, &src, &dest, rotation, nullptr, flip);
 }
 
-void TextureController::render_frame(std::string id, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio) {
+void TextureController::render_frame(string id, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip, float x_scale, float y_scale, float rotation, float speed_ratio) {
    SDL_Texture *tex = textures[id];
 
    SDL_Rect cam_rect = Camera::get_instance()->get_view();
@@ -77,7 +79,7 @@ void TextureController::render_frame(std::string id, SDL_Rect src, SDL_Rect dest
    SDL_RenderCopyEx(GameEngine::get_instance()->get_renderer(), tex, &src, &dest, rotation, nullptr, flip);
 }
 
-void TextureController::render_ui(std::string id, int x, int y) {
+void TextureController::render_ui(string id, int x, int y) {
 
 }
 
@@ -85,12 +87,28 @@ void TextureController::display_text(SDL_Texture* text, SDL_Rect dest) {
    SDL_RenderCopy(GameEngine::get_instance()->get_renderer(), text, nullptr, &dest);
 }
 
-SDL_Texture* TextureController::render_text(std::string font_id, std::string text, SDL_Rect dest) {
+SDL_Texture* TextureController::render_text(string font_id, string text) {
    SDL_Color black = {0, 0, 0, 0};
-   SDL_Color bg = {255, 255, 255, 0};
+   SDL_Color bg = {255, 255, 255, 150};
    SDL_Surface *rendered = TTF_RenderText_Shaded(this->fonts[font_id], text.c_str(), black, bg);
    SDL_Texture *tex = SDL_CreateTextureFromSurface(GameEngine::get_instance()->get_renderer(), rendered);
-   std::cout << tex << std::endl;
    SDL_FreeSurface(rendered);
    return tex;
+}
+
+void TextureController::render_color(SDL_Color col) {
+   SDL_Rect dest = Camera::get_instance()->get_max();
+   SDL_Renderer *ren = GameEngine::get_instance()->get_renderer();
+
+   SDL_SetRenderDrawColor(ren, col.r, col.g, col.b, col.a);
+
+   SDL_RenderFillRect(ren, nullptr);
+}
+
+SDL_Rect TextureController::get_img_dims(string id) {
+   SDL_Rect res;
+
+   SDL_QueryTexture(textures[id], nullptr, nullptr, &res.w, &res.h);
+
+   return res;
 }
