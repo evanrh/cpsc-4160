@@ -11,7 +11,7 @@
       <screen font="main" type="gameover" source="./res/screens/gameover.png"/>
    </ui>
    <level source="./maps/joust_level.tmx">
-      <layer id="sky" source="./bg/joust_bg.png"></layer>
+      <layer id="city" source="./bg/joust_bg.png"></layer>
    </level>
    <level source="./maps/level.tmx">
       <layer id="forest_9" source="./bg/09_Forest.png"></layer>
@@ -22,5 +22,4 @@
       <layer id="bushes" source="./bg/02_Bushes.png"></layer>
    </level>
 
-<layer id="city" source="./bg/joust_bg" />
 </game>
