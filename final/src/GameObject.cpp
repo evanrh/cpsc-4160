@@ -20,6 +20,7 @@ GameObject::GameObject(unsigned start_x, unsigned start_y, int w, int h, std::st
    flip = SDL_FLIP_NONE;
    collidable = false;
    harmful = false;
+   win = false;
 }
 
 GameObject::~GameObject() {

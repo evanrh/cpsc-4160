@@ -62,6 +62,10 @@ void Player::update() {
             this->reset();
             return;
          }
+         else if(tile->is_win()) {
+            GameEngine::get_instance()->next_level();
+            this->reset();
+         }
 
          break;
 

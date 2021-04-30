@@ -27,6 +27,7 @@ class GameEngine {
       void collisions();
       void update();
       void framerate();
+      void next_level();
       SDL_Renderer* get_renderer() { return renderer; }
       Level* get_level() { return current_level ;}
       Player* get_player() { return static_cast<Player*>(player) ;}
@@ -43,6 +44,7 @@ class GameEngine {
       unsigned y_start_time;
       std::vector<Level*> levels;
       std::vector<UIElement*> ui_elems;
+      unsigned current_level_id;
       Level* current_level;
 
       GameEngine();

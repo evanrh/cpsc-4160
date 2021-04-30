@@ -24,6 +24,8 @@ class GameObject {
       void set_y_pos(unsigned pos);
       void set_motion_state(unsigned state) { motion_state = state; }
       void set_harmful(bool v) { harmful = v; }
+      void set_win(bool w) { win = w; }
+      bool is_win() { return win; }
       bool is_harmful() {return harmful; }
       double get_x_vel() { return x_vel; }
       double get_y_vel() { return y_vel; }
@@ -37,8 +39,7 @@ class GameObject {
       SDL_Rect obj_rect;
       SDL_Rect current_frame;
       SDL_Rect collision_box;
-      bool collidable;
-      bool harmful;
+      bool collidable, harmful, win;
       std::string img_id;
       Sprite* obj_sprite;
       double x_vel;

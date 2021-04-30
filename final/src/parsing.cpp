@@ -17,8 +17,12 @@ namespace fs = std::filesystem;
 MapParser *MapParser::map_instance = nullptr;
 GameParser *GameParser::game_instance = nullptr;
 
+// Properties for tiles. Some are harmful, one is a win condition, and some have collision
 std::map<int, bool> tile_info;
+std::map<int, bool> harmful_tiles;
 int no_collide[10] = {119, 102, 103, 104, 105, 120, 121, 122, 137, 138};
+int harmful[4] = {115, 116, 117, 118};
+int win_id = 129;
 
 void Level::render() {
    for(auto bg : bg_layers) {
@@ -37,6 +41,9 @@ Level* MapParser::load(std::string filename) {
 
    for(auto i : no_collide) {
       tile_info[i] = false;
+   }
+   for(auto i : harmful) {
+      harmful_tiles[i] = true;
    }
 
    int width, height;
@@ -108,8 +115,11 @@ Level* MapParser::load(std::string filename) {
 
          // Create a new tile and add it to the level object
          Tile* current = new Tile(j * tile_w, i * tile_h, tile_w, tile_h, tileset_image, img_x, img_y, collidable);
-         if(i == 14) {
+         if(harmful_tiles.count(id)) {
             current->set_harmful(true);
+         }
+         if(id == win_id) {
+            current->set_win(true);
          }
          loaded_level->add_tile(current);
 

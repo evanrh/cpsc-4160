@@ -65,7 +65,6 @@ void GameEngine::load_game(std::string game_filename) {
    player = gp->get_player();
 
    // Hardcoded player collision box
-   //player->set_collision_box(8, 16, 16, 16);
    player->set_collision_box(8, 15, 16, 17);
 
    Camera::get_instance()->set_target(player);
@@ -78,6 +77,7 @@ void GameEngine::load_game(std::string game_filename) {
       return;
    }
    current_level = levels[0];
+   current_level_id = 0;
    gp->cleanup();
 }
 
@@ -246,29 +246,21 @@ bool collision_avoidance(GameObject &l, GameObject &r) {
 
    if(!((left.x + left.w) < right.x)) {
       if(!((top.y + top.h) < bot.y)) {
-         /*
-         if(l.y_vel > 0) {
-            l.y_vel = 0;
-            l.obj_rect.y = bot.y - l.obj_rect.h;
-         }
-         else if(l.y_vel < 0) {
-            l.y_vel = 0;
-            l.obj_rect.y = top.y + top.h + 1;
-         }
-         */
          return true;
-         /*
-         if(l.x_vel > 0) {
-            l.x_vel = 0;
-            l.obj_rect.x = right.x - left.w; 
-         }
-         else if(l.x_vel < 0) {
-            l.x_vel = 0;
-            l.obj_rect.x = right.w + left.x;
-         }
-         */
       }
    }
    return false;
    
+}
+
+void GameEngine::next_level() {
+   current_level_id++;
+
+   if(current_level_id >= levels.size()) {
+      running = false;
+      return;
+   }
+   else {
+      current_level = levels[current_level_id];
+   }
 }
