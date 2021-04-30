@@ -41,17 +41,29 @@ void GameEngine::init() {
       std::cerr << "Could not create renderer." << SDL_GetError() << std::endl;
    }
 
+
    inited = true;
 }
 
 void GameEngine::loop() {
 
    while(running) {
-      this->handle_input();
-      this->update();
-      this->render();
-      this->framerate();
+      if(not paused) {
+         this->handle_input();
+         this->update();
+         this->render();
+         this->frame_delay();
+      }
+      else {
+         screens["pause"]->handle_input();
+         screens["pause"]->update();
+         screens["pause"]->render();
+         this->frame_delay();
+      }
    }
+
+   screens["gameover"]->render();
+   SDL_Delay(5000);
 }
 
 void GameEngine::load_game(std::string game_filename) {
@@ -71,6 +83,7 @@ void GameEngine::load_game(std::string game_filename) {
    Camera::get_instance()->set_target(player);
    levels = gp->get_levels();
    ui_elems = gp->get_ui_elems();
+   screens = gp->get_screens();
 
    if(levels.size() < 1) {
       std::cerr << "Please specify a level in the game setup!" << std::endl;
@@ -82,7 +95,7 @@ void GameEngine::load_game(std::string game_filename) {
 }
 
 void GameEngine::render() {
-   SDL_RenderClear(renderer);
+   //SDL_RenderClear(renderer);
 
    current_level->render();
    player->render();
@@ -109,15 +122,15 @@ void GameEngine::update() {
    }
 }
 
-void GameEngine::framerate() {
+void GameEngine::frame_delay() {
    // Calculate the current framerate, and delay accordingly
-   static unsigned fps, fpsCounter, duration;
+   static unsigned fpsCounter, duration;
 
    current_time = SDL_GetTicks();
    fpsCounter++;
    if(current_time >= (start_time + 1000)) {
       start_time = current_time;
-      fps = fpsCounter;
+      framerate = fpsCounter;
       fpsCounter = 0;
    }
    
@@ -125,6 +138,7 @@ void GameEngine::framerate() {
    if(duration < FRAME_DURATION) {
       SDL_Delay(FRAME_DURATION - duration);
    }
+
 }
 
 void GameEngine::handle_input() {
@@ -162,6 +176,8 @@ void GameEngine::handle_input() {
                   player->set_y_vel(player->get_y_vel() - START_Y_VEL);
                   player->set_motion_state(OBJ_JUMPING);
                   break;
+               case SDLK_p:
+                  this->pause();
                default:
                   break;
             }

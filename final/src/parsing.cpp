@@ -169,7 +169,7 @@ std::vector<Level*> GameParser::get_levels() {
    root = this->game_file->FirstChildElement("game");
 
    MapParser* mp = mp->get_instance();
-   for(level_data = root->FirstChildElement("level"); level_data != nullptr; level_data = level_data->NextSiblingElement()) {
+   for(level_data = root->FirstChildElement("level"); level_data != nullptr; level_data = level_data->NextSiblingElement("level")) {
 
       // Get relative of path of each level file
       std::string level_file = level_data->Attribute("source");
@@ -221,51 +221,95 @@ std::vector<UIElement*> GameParser::get_ui_elems() {
    while(curr_elem != nullptr) {
       int x, y;
       unsigned w, h;
+      auto ci = Camera::get_instance();
       std::string name, font_name;
       UIElement* elem;
+
+      std::string loc = curr_elem->Attribute("loc");
       
       name = curr_elem->Attribute("name");
       font_name = curr_elem->Attribute("font");
       curr_elem->QueryUnsignedAttribute("width", &w);
       curr_elem->QueryUnsignedAttribute("height", &h);
-      
+
+      // Common locations for UI Elements
+      // Can be: tl, tr, br, bl; t and b are for top and bottom, while l and r are for right and left
+      if(loc == "tl") {
+            x = 0;
+            y = 0;
+         }
+      else if(loc == "tr") {
+         x = SCREEN_WIDTH - w;
+         y = 0;
+      }
+      else if(loc == "br") {
+         x = SCREEN_WIDTH - w;
+         y = SCREEN_HEIGHT - h;
+      }
+      else {
+         x = 0;
+         y = SCREEN_HEIGHT - h;
+      }
+
+
       // Determine which type of UI Element is being parsed
       if(name == "lives") {
-         std::string loc = curr_elem->Attribute("loc");
          std::string src = curr_elem->Attribute("source");
          unsigned lives;
-         auto ci = Camera::get_instance();
-
-         // Locations of life counter
-         // Can be: tl, tr, br, bl; t and b are for top and bottom, while l and r are for right and left
-         if(loc == "tl") {
-            x = 0;
-            y = 0;
-         }
-         else if(loc == "tr") {
-            x = SCREEN_WIDTH - w;
-            y = 0;
-         }
-         else if(loc == "br") {
-            x = SCREEN_WIDTH - w;
-            y = SCREEN_HEIGHT - h;
-         }
-         else {
-            x = 0;
-            y = SCREEN_HEIGHT - h;
-         }
-
          curr_elem->QueryUnsignedAttribute("start", &lives);
          GameEngine::get_instance()->get_player()->set_lives(lives);
-         elem = new LifeCounter(x, y, w, h, name, src, font_name);
+         elem = new LifeCounter(x, y, w, h, font_name);
       }
       // Parse other types of UI elements
-      else {
-
+      else if(name == "frames") {
+         elem = new FrameRate(x, y, w, h, font_name);
       }
       elems.push_back(elem);
       curr_elem = curr_elem->NextSiblingElement("element");
    }
 
    return elems;
+}
+
+// Return vector of screens in game setup file
+std::map<std::string, Screen*> GameParser::get_screens() {
+   tinyxml2::XMLElement *root, *ui_root, *curr_screen;
+   std::map<std::string, Screen*> screens;
+
+   root = game_file->FirstChildElement("game");
+   ui_root = root->FirstChildElement("ui");
+   if(ui_root == nullptr) {
+      return screens;
+   }
+
+   curr_screen = ui_root->FirstChildElement("screen");
+
+   // Parse screens
+   while(curr_screen != nullptr) {
+      std::string type, font_name;
+      Screen* screen = nullptr;
+
+      type = curr_screen->Attribute("type");
+      font_name = curr_screen->Attribute("font");
+
+      if(type == "") { continue; }
+      // Determine screen type
+      if(type == "pause") {
+         SDL_Color black = {0, 0, 0, 100};
+         screen = new PauseScreen(black, font_name);
+      }
+      // Parse other types of UI elements
+      else if(type == "start") {
+
+      }
+      else if(type == "gameover") {
+         std::string src = curr_screen->Attribute("source");
+         screen = new ImageScreen(font_name, src);
+      }
+
+      screens[type] = screen;
+      curr_screen = curr_screen->NextSiblingElement("screen");
+   }
+
+   return screens;
 }

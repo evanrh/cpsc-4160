@@ -46,6 +46,7 @@ class GameParser {
       Player* get_player(void);
       std::vector<Level*> get_levels();
       std::vector<UIElement*> get_ui_elems();
+      std::map<std::string, Screen*> get_screens();
    private:
       GameParser() {}
       static GameParser* game_instance;
