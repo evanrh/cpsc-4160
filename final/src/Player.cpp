@@ -91,6 +91,7 @@ void Player::update() {
    last_frame_time = current_frame_time;
 }
 
+// Reset Player position
 void Player::reset() {
    obj_rect.x = original_x;
    obj_rect.y = original_y;

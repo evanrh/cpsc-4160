@@ -8,6 +8,8 @@
 #include "Sprite.h"
 #include "globals.h"
 
+// A generic object that is in the game
+// GameObject should be treated as an abstract, but it does provide definitions for all of the methods
 class GameObject {
    public:
       GameObject(unsigned start_x, unsigned start_y, int w, int h, std::string img_id, std::string img_file);

@@ -7,6 +7,7 @@
 GameEngine* GameEngine::s_instance = nullptr;
 
 GameEngine::GameEngine() {
+
 }
 
 GameEngine::~GameEngine() {
@@ -18,6 +19,7 @@ void GameEngine::init() {
       return;
    }
 
+   // Initialized SDL
    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
       std::cout << "Error Initializing SDL: " << SDL_GetError() << std::endl;
    }
@@ -32,10 +34,12 @@ void GameEngine::init() {
                );
    IMG_Init(IMG_INIT_PNG);
 
+   // Initialize SDL for text
    if(TTF_Init() < 0) {
       std::cerr << "Could not load SDL_ttf lib" << std::endl;
    }
 
+   // Create a renderer that uses hardware acceleration and is vertically synced to the screen
    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
    if(!renderer) {
       std::cerr << "Could not create renderer." << SDL_GetError() << std::endl;
@@ -48,7 +52,8 @@ void GameEngine::init() {
 
 void GameEngine::loop() {
 
-   // Loop at start screen
+   // Loop at start screen until player presses enter
+   // This is handled by the screen itself
    while(!start) {
       Screen* s = screens["start"];
       s->handle_input();
@@ -56,6 +61,7 @@ void GameEngine::loop() {
       s->render();
    }
 
+   // Loop until death or quit
    while(running) {
       if(not paused) {
          this->handle_input();
@@ -63,6 +69,7 @@ void GameEngine::loop() {
          this->render();
          this->frame_delay();
       }
+      // Attempt to handle pausing
       else {
          screens["pause"]->handle_input();
          screens["pause"]->update();
@@ -71,12 +78,14 @@ void GameEngine::loop() {
       }
    }
 
+   // This only runs if the player had a game over, not from a quit or otherwise
    if(gameover) {
       screens["gameover"]->render();
       SDL_Delay(5000);
    }
 }
 
+// Load the game setup file
 void GameEngine::load_game(std::string game_filename) {
    if(!this->inited) {
       this->init();
@@ -90,22 +99,27 @@ void GameEngine::load_game(std::string game_filename) {
    // Hardcoded player collision box
    player->set_collision_box(8, 15, 16, 17);
 
+   // Get the list of levels, ui elements, and screens in the setup file
    Camera::get_instance()->set_target(player);
    levels = gp->get_levels();
    ui_elems = gp->get_ui_elems();
    screens = gp->get_screens();
 
+   // Bad level spec
    if(levels.size() < 1) {
       std::cerr << "Please specify a level in the game setup!" << std::endl;
       this->running = false;
       return;
    }
+
+   // Setup current in-play level and cleanup the parser
    current_level = levels[0];
    current_level_id = 0;
    current_level->set_camera_lims();
    gp->cleanup();
 }
 
+// Render all objects and ui elems to screen
 void GameEngine::render() {
    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
    SDL_RenderClear(renderer);
@@ -120,34 +134,38 @@ void GameEngine::render() {
    SDL_RenderPresent(renderer);
 }
 
+// Update state of objects and ui elements
 void GameEngine::update() {
    player->update();
    current_level->update();
-   this->collisions();
    Camera::get_instance()->update();
 
    for(auto elem : ui_elems) {
       elem->update();
    }
 
+   // Check if player died
    if(static_cast<Player*>(player)->get_lives() == 0) {
       running = false;
       gameover = true;
    }
 }
 
+// Calculate the current framerate, and delay accordingly
 void GameEngine::frame_delay() {
-   // Calculate the current framerate, and delay accordingly
    static unsigned fpsCounter, duration;
 
    current_time = SDL_GetTicks();
    fpsCounter++;
+
+   // Check for at least one second passing
    if(current_time >= (start_time + 1000)) {
       start_time = current_time;
       framerate = fpsCounter;
       fpsCounter = 0;
    }
    
+   // Delay if frame rate is too high
    duration = SDL_GetTicks() - current_time;
    if(duration < FRAME_DURATION) {
       SDL_Delay(FRAME_DURATION - duration);
@@ -219,24 +237,7 @@ void GameEngine::handle_input() {
    }
 }
 
-void GameEngine::collisions() {
-
-   // Check for collision between player and all GameObjects (will be level tiles at the moment)
-
-   auto tiles = current_level->get_tiles();
-   bool collided = false;
-
-   /*
-   for(auto tile : tiles) {
-      if(collided) {
-         collision_avoidance(*player, *tile);
-      }
-      else {
-         collided = collision_avoidance(*player, *tile);
-      }
-   }
-   */
-}
+// Cleanup SDL resources and player
 void GameEngine::cleanup() {
    SDL_DestroyRenderer(renderer);
    SDL_DestroyWindow(window);
@@ -248,6 +249,22 @@ void GameEngine::cleanup() {
    SDL_Quit();
 }
 
+// Set in-play level to the next one in the list
+void GameEngine::next_level() {
+   current_level_id++;
+
+   if(current_level_id >= levels.size()) {
+      running = false;
+      return;
+   }
+   else {
+      current_level = levels[current_level_id];
+      current_level->set_camera_lims();
+   }
+}
+
+// Collision detection and correction
+// Kind of works, but not really
 bool collision_avoidance(GameObject &l, GameObject &r) {
 
    if(not l.collidable or not r.collidable) return false;
@@ -281,17 +298,4 @@ bool collision_avoidance(GameObject &l, GameObject &r) {
    }
    return false;
    
-}
-
-void GameEngine::next_level() {
-   current_level_id++;
-
-   if(current_level_id >= levels.size()) {
-      running = false;
-      return;
-   }
-   else {
-      current_level = levels[current_level_id];
-      current_level->set_camera_lims();
-   }
 }

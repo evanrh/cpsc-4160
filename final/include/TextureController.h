@@ -10,6 +10,8 @@
 
 using std::string;
 
+// Singleton class controlling the rendering of all items to the screen
+// All render methods except for "render_text" render in context of a camera
 class TextureController {
    public:
        static TextureController* get_instance() { return s_instance = (s_instance != nullptr) ? s_instance : new TextureController();}

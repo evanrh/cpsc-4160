@@ -9,6 +9,8 @@
 #include "GameObject.h"
 #include "Sprite.h"
 
+// Special player class
+// Subset of GameObject that has lives and an original position
 class Player: public GameObject {
    public:
       Player(int w, int h, std::string sprite_filename);

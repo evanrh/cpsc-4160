@@ -16,6 +16,7 @@
 #include "parsing.h"
 #include "ui.h"
 
+// GameEngine is a singleton representing the engine itself
 class GameEngine {
    public:
       static GameEngine* get_instance() { return s_instance = (s_instance != nullptr) ? s_instance : new GameEngine() ;}
@@ -25,7 +26,6 @@ class GameEngine {
       void render();
       void cleanup();
       void loop();
-      void collisions();
       void update();
       void next_level();
       void start_game() { start = true; }

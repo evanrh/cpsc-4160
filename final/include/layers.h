@@ -3,12 +3,14 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+// Abstract layer
 class Layer {
    public:
       virtual void update() {}
       virtual void render() {}
 };
 
+// Background layer element
 class BackgroundLayer: public Layer {
    public:
       BackgroundLayer(std::string id, std::string filename, int x, int y, float scroll_speed=1.0f, float x_scale=1.0f, float y_scale=1.0f);

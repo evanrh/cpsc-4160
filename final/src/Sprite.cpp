@@ -17,12 +17,13 @@ Sprite::~Sprite() {
 }
 
 SDL_Rect Sprite::update() {
+   // Get frame number based off of sprite framerate
    int frame_time = (int) (SDL_GetTicks() / frame_duration) % frame_count;
 
    static int last_frame_time = 0;
 
+   // Update time and sprite position
    last_frame_time = frame_time;
-
    sprite_rect.x = frame_time * w;
 
    
@@ -31,6 +32,7 @@ SDL_Rect Sprite::update() {
 
 void Sprite::change_state(unsigned state) {
    
+   // Change movement states based on input state
    switch(state) {
       case OBJ_IDLE:
          sprite_rect.y = 0;

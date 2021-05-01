@@ -32,6 +32,7 @@ void UIElement::reset() {
 LifeCounter::LifeCounter(int x, int y, unsigned w, unsigned h, std::string font_name) : UIElement(x, y, w, h, font_name, "")
 {
 }
+
 // Get current lives of player
 void LifeCounter::update() {
    current_lives = GameEngine::get_instance()->get_player()->get_lives();
@@ -94,7 +95,6 @@ PauseScreen::PauseScreen(SDL_Color color, std::string font) {
 
    options.push_back(title);
    options.push_back(resume);
-   //delete title;
 }
 
 void PauseScreen::render() {

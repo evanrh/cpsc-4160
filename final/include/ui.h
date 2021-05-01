@@ -92,9 +92,4 @@ class FrameRate: public UIElement {
       unsigned current_framerate = 0, prev_framerate = 0;
 };
 
-// Button UI Element; typically goes in a screen
-class Button: public UIElement {
-
-};
-
 #endif

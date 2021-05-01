@@ -17,6 +17,7 @@ GameObject::GameObject(unsigned start_x, unsigned start_y, int w, int h, std::st
    x_vel = 0;
    y_vel = 0;
 
+   // Defaults
    flip = SDL_FLIP_NONE;
    collidable = false;
    harmful = false;
@@ -49,6 +50,7 @@ void GameObject::update() {
    obj_sprite->change_state(motion_state);
    current_frame = obj_sprite->update();
 
+   // Update object motion state and switch sprites if it has them
    switch(motion_state) {
       case OBJ_IDLE: case OBJ_MOVE_RIGHT:
          flip = SDL_FLIP_NONE;
@@ -60,6 +62,7 @@ void GameObject::update() {
          flip = SDL_FLIP_NONE;
    }
 
+   // Update object position
    obj_rect.x += x_vel * ((double)(current_frame_time - last_frame_time) / 1000);
    obj_rect.y += y_vel * (double)(current_frame_time - last_frame_time) / 10;
 
@@ -82,10 +85,12 @@ void GameObject::update() {
    last_frame_time = current_frame_time;
 }
 
+// Render object in context of the camera
 void GameObject::render() {
    TextureController::get_instance()->render_frame(img_id, current_frame, obj_rect, flip, 1, 1, 0, 1);
 }
 
+// Set the collision boundaries of an object
 void GameObject::set_collision_box(unsigned x, unsigned y, unsigned w, unsigned h) {
    collidable = true;
    collision_box.x = x;
@@ -94,9 +99,11 @@ void GameObject::set_collision_box(unsigned x, unsigned y, unsigned w, unsigned 
    collision_box.h = h;
 }
 
+// Get the collision boundaries of an object
 SDL_Rect GameObject::get_collision_box() {
    return {collision_box.x + obj_rect.x, collision_box.y + obj_rect.y, collision_box.w, collision_box.h};
 }
+
 void GameObject::init() {
 
 }

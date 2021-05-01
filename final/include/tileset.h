@@ -7,6 +7,8 @@
 
 #include "GameObject.h"
 
+// Tile objects
+// Special GameObjects that have a set position and do not move
 class Tile: public GameObject {
    public:
       Tile(unsigned x, unsigned y, unsigned w, unsigned h, std::string tileset_image, unsigned img_x, unsigned img_y, bool collidable);

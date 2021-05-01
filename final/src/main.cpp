@@ -20,7 +20,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
    if(argc < 2) {
-      cerr << "Please specify a game setup file! (e.g. ./res/game.xml)" << endl;
+      cerr << "Please specify a game setup file! (e.g. ./res/joust.xml)" << endl;
       return EXIT_FAILURE;
    }
    GameEngine* engine = GameEngine::get_instance();

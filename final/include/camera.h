@@ -8,6 +8,8 @@
 #include "GameObject.h"
 #include "Player.h"
 
+// Viewing camera of the engine
+// This is used to define a reference position to the engine as to what should be rendered
 class Camera {
    public:
       static Camera* get_instance() { return cam_instance = (cam_instance != nullptr) ? cam_instance : new Camera(); }
