@@ -21,5 +21,7 @@
       <layer id="forest_4" source="./bg/04_Forest.png"></layer>
       <layer id="bushes" source="./bg/02_Bushes.png"></layer>
    </level>
+   <level source="./maps/vertical_level.tmx" start_x="320" start_y="1568">
+   </level>
 
 </game>
