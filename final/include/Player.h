@@ -18,6 +18,7 @@ class Player: public GameObject {
       virtual void update();
       void reset();
       void set_lives(unsigned l) { lives = l ;}
+      void set_start_pos(int x, int y);
       unsigned get_lives() { return lives ;}
    private:
       unsigned lives;

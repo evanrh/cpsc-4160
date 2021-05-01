@@ -117,6 +117,10 @@ void GameEngine::load_game(std::string game_filename) {
    current_level_id = 0;
    current_level->set_camera_lims();
    gp->cleanup();
+
+   int x = current_level->get_start_x();
+   int y = current_level->get_start_y();
+   static_cast<Player*>(player)->set_start_pos(x, y);
 }
 
 // Render all objects and ui elems to screen
@@ -260,6 +264,9 @@ void GameEngine::next_level() {
    else {
       current_level = levels[current_level_id];
       current_level->set_camera_lims();
+      int x = current_level->get_start_x();
+      int y = current_level->get_start_y();
+      static_cast<Player*>(player)->set_start_pos(x, y);
    }
 }
 

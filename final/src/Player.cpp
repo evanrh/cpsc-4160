@@ -96,3 +96,8 @@ void Player::reset() {
    obj_rect.x = original_x;
    obj_rect.y = original_y;
 }
+
+void Player::set_start_pos(int x, int y) {
+   original_x = x;
+   original_y = y;
+}

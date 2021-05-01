@@ -10,10 +10,10 @@
       <screen font="main" type="start" source="./res/screens/joust_start_screen.png"/>
       <screen font="main" type="gameover" source="./res/screens/gameover.png"/>
    </ui>
-   <level source="./maps/joust_level.tmx">
+   <level source="./maps/joust_level.tmx" start_x="50" start_y="0">
       <layer id="city" source="./bg/joust_bg.png"></layer>
    </level>
-   <level source="./maps/level.tmx">
+   <level source="./maps/level.tmx" start_x="0" start_y="0">
       <layer id="forest_9" source="./bg/09_Forest.png"></layer>
       <layer id="forest_8" source="./bg/08_Forest.png"></layer>
       <layer id="forest_7" source="./bg/07_Forest.png"></layer>

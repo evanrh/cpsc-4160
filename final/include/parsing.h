@@ -22,12 +22,16 @@ class Level {
       void set_tile_w(unsigned w) { tile_w = w; }
       void set_tile_h(unsigned h) { tile_h = h; }
       void set_camera_lims();
+      void set_start(int x, int y);
       void update() {}
       void render();
       std::vector<GameObject*> get_tiles() { return this->tiles; };
+      int get_start_x() { return start_x; }
+      int get_start_y() { return start_y; }
 
    private:
       unsigned width, height, tile_w, tile_h;
+      int start_x, start_y;
       std::vector<GameObject*> tiles;
       std::vector<BackgroundLayer> bg_layers; // Background layers. Rendered in back-to-front order
 };

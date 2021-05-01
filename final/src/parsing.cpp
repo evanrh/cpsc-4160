@@ -42,6 +42,12 @@ void Level::add_tile(Tile *t) {
 void Level::set_camera_lims() {
    Camera::get_instance()->set_limits(width * tile_w, height * tile_h);
 }
+
+void Level::set_start(int x, int y) {
+   start_x = x;
+   start_y = y;
+}
+
 Level* MapParser::load(std::string filename) {
 
    for(auto i : no_collide) {
@@ -185,6 +191,11 @@ std::vector<Level*> GameParser::get_levels() {
    MapParser* mp = mp->get_instance();
    for(level_data = root->FirstChildElement("level"); level_data != nullptr; level_data = level_data->NextSiblingElement("level")) {
 
+      // Get starting position for level
+      int x = 0, y = 0;
+      level_data->QueryIntAttribute("start_x", &x);
+      level_data->QueryIntAttribute("start_y", &y);
+
       // Get relative of path of each level file
       std::string level_file = level_data->Attribute("source");
       level_path /= level_file;
@@ -203,6 +214,7 @@ std::vector<Level*> GameParser::get_levels() {
 
       }
 
+      current_level->set_start(x, y);
       levels.push_back(current_level);
       level_path = lp_holder;
    }
